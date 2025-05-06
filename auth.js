@@ -1,6 +1,5 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { getUserFromDB } from "./utils/dbService";
 import { prisma } from "./lib/prisma";
 import { comparePassword } from "./lib/auth";
 

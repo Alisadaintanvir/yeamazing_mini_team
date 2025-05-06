@@ -11,21 +11,45 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { useActionState, useState } from "react";
-import { signupUser } from "@/actions/auth-actions";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { registrationSchema } from "@/utils/zod";
+import { FormError } from "./FormError";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 export function RegistrationForm({ className, ...props }) {
-  const [formValues, setFormValues] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: zodResolver(registrationSchema),
   });
 
-  const [state, formAction] = useActionState(signupUser, {
-    success: null,
-    error: {},
-  });
+  const router = useRouter();
+
+  const onSubmit = async (data) => {
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+
+      if (result.success) {
+        toast.success(result.message);
+        reset(); // Reset the form fields after successful signup
+        router.push("/login");
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      toast.error("An error occurred during signup");
+    }
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -37,90 +61,53 @@ export function RegistrationForm({ className, ...props }) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={formAction}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="name">Name</Label>
                 <Input
                   id="name"
-                  name="name"
                   type="text"
-                  value={formValues.name}
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, name: e.target.value })
-                  }
+                  {...register("name")}
                   placeholder="John Doe"
                   required
                 />
-                {state?.errors?.name && (
-                  <p className="text-sm text-red-500">{state.errors.name[0]}</p>
-                )}
+                <FormError error={errors.name} />
               </div>
 
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
-                  name="email"
                   type="email"
-                  value={formValues.email}
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, email: e.target.value })
-                  }
+                  {...register("email")}
                   placeholder="m@example.com"
                   required
                 />
-                {state?.errors?.email && (
-                  <p className="text-sm text-red-500">
-                    {state.errors.email[0]}
-                  </p>
-                )}
+                <FormError error={errors.email} />
               </div>
 
               <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
-                  name="password"
                   type="password"
-                  value={formValues.password}
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, password: e.target.value })
-                  }
+                  {...register("password")}
                   required
                 />
-                {state?.errors?.password && (
-                  <p className="text-sm text-red-500">
-                    {state.errors.password[0]}
-                  </p>
-                )}
+                <FormError error={errors.password} />
               </div>
 
               <div className="grid gap-2">
                 <Label htmlFor="confirm-password">Confirm Password</Label>
                 <Input
                   id="confirm-password"
-                  name="confirmPassword"
                   type="password"
-                  value={formValues.confirmPassword}
-                  onChange={(e) =>
-                    setFormValues({
-                      ...formValues,
-                      confirmPassword: e.target.value,
-                    })
-                  }
+                  {...register("confirmPassword")}
                   required
                 />
-                {state?.errors?.confirmPassword && (
-                  <p className="text-sm text-red-500">
-                    {state.errors.confirmPassword[0]}
-                  </p>
-                )}
+                <FormError error={errors.confirmPassword} />
               </div>
-
-              {state?.success && (
-                <p className="text-green-600 text-center">{state.message}</p>
-              )}
 
               <Button type="submit" className="w-full">
                 Sign Up
