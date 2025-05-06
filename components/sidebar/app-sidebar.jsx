@@ -51,24 +51,6 @@ const data = {
       title: "Team",
       url: "/team",
       icon: BookOpen,
-      items: [
-        {
-          title: "Add Team Member",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
     },
     {
       title: "Settings",
