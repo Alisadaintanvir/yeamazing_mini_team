@@ -11,16 +11,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/utils/zod";
 import { useRouter, useSearchParams } from "next/navigation";
-import { signInAction } from "@/actions/auth-actions";
+import { FormError } from "./FormError";
+import { toast } from "react-toastify";
 
 export function LoginForm({ className, ...props }) {
   const router = useRouter();
-  const [error, setError] = useState(null);
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
@@ -34,13 +33,19 @@ export function LoginForm({ className, ...props }) {
 
   const onSubmit = async (data) => {
     try {
-      const result = await signInAction(data);
-      if (result?.error) {
-        setError(result.error);
-        return;
+      const res = await fetch("/api/auth/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+      console.log(result);
+      if (result.success) {
+        toast.success(result.message);
+        router.push(callbackUrl);
+      } else {
+        toast.error(result.message);
       }
-
-      router.push(callbackUrl);
     } catch (error) {
       console.log("Error during sign-in:");
     }
@@ -66,9 +71,7 @@ export function LoginForm({ className, ...props }) {
                   {...register("email")}
                   placeholder="m@example.com"
                 />
-                {errors.email && (
-                  <p className="text-red-500 text-sm">{errors.email.message}</p>
-                )}
+                <FormError error={errors.email} />
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
@@ -87,13 +90,9 @@ export function LoginForm({ className, ...props }) {
                   {...register("password")}
                   placeholder="********"
                 />
-                {errors.password && (
-                  <p className="text-red-500 text-sm">
-                    {errors.password.message}
-                  </p>
-                )}
+                <FormError error={errors.password} />
               </div>
-              {error && <p className="text-red-500 text-sm">{error}</p>}
+
               <Button type="submit" className="w-full">
                 Login
               </Button>

@@ -42,10 +42,13 @@ export async function POST(req) {
       },
     });
 
-    return NextResponse.json({
-      success: true,
-      message: "User created successfully",
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        message: "User created successfully",
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Signup error:", error);
     return NextResponse.json(

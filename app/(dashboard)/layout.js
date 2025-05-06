@@ -1,5 +1,4 @@
-import { logoutAction } from "@/actions/auth-actions";
-import { auth } from "@/auth";
+import { auth, signOut } from "@/auth";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import {
   Breadcrumb,
@@ -43,7 +42,12 @@ export default function DashboardLayout({ children }) {
             </div>
 
             <div className="px-4">
-              <form action={logoutAction}>
+              <form
+                action={async () => {
+                  "use server";
+                  await signOut({ redirectTo: "/" });
+                }}
+              >
                 <Button
                   className="bg-red-700 text-white cursor-pointer hover:bg-red-800 hover:text-white text-sm transition-colors duration-200 ease-in-out"
                   variant="outline"
