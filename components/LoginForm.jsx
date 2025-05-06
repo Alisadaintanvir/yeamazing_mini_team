@@ -1,4 +1,5 @@
 "use client";
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,10 +19,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { FormError } from "./FormError";
 import { toast } from "react-toastify";
 
-export function LoginForm({ className, ...props }) {
+export function LoginForm({ className, callbackUrl, ...props }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
   const {
     register,
