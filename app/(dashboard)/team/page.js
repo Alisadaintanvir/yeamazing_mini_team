@@ -5,6 +5,7 @@ import { useState } from "react";
 import TeamStats from "@/components/team/TeamStats";
 import MemberTable from "@/components/team/MemberTable";
 import TeamSelection from "@/components/team/TeamSelection";
+import { AddTeamModal } from "@/components/team/AddTeamModal";
 
 const TeamDashboard = () => {
   // Sample data structure
@@ -110,6 +111,9 @@ const TeamDashboard = () => {
       />
       {/* Team Stats */}
       <TeamStats currentTeam={currentTeam} roles={roles} />
+
+      {/* Add Team Modal */}
+      <AddTeamModal onTeamAdded={() => {}} />
     </div>
   );
 };
