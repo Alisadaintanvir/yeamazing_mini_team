@@ -18,6 +18,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 export function NavMain({ items }) {
   const pathname = usePathname();
@@ -42,10 +43,10 @@ export function NavMain({ items }) {
                 tooltip={item.title}
                 isActive={isActive(item.url) || isSubItemActive(item.items)}
               >
-                <a href={item.url}>
+                <Link href={item.url}>
                   <item.icon />
                   <span>{item.title}</span>
-                </a>
+                </Link>
               </SidebarMenuButton>
               {item.items?.length ? (
                 <>
@@ -63,9 +64,9 @@ export function NavMain({ items }) {
                             asChild
                             isActive={isActive(subItem.url)}
                           >
-                            <a href={subItem.url}>
+                            <Link href={subItem.url}>
                               <span>{subItem.title}</span>
-                            </a>
+                            </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       ))}

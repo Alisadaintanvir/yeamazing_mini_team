@@ -5,9 +5,9 @@ const protectedRoutes = ["/dashboard", "/message"];
 const authRoutes = ["/login", "/registration"];
 
 export default async function middleware(req) {
-  const session = await auth();
   const { pathname } = req.nextUrl;
 
+  const session = await auth();
   const isProtectedRoute = protectedRoutes.some((route) =>
     pathname.startsWith(route)
   );
@@ -27,5 +27,8 @@ export default async function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|.*\\.png$).*)", // Your existing matcher
+    "/api/:path*", // Add API routes
+  ],
 };

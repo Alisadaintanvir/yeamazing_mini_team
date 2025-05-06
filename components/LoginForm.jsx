@@ -25,7 +25,7 @@ export function LoginForm({ className, callbackUrl, ...props }) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(loginSchema),
   });
@@ -37,8 +37,13 @@ export function LoginForm({ className, callbackUrl, ...props }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
+      if (res.status === 429) {
+        toast.error(
+          "Too many authentication attempts. Please try again later."
+        );
+      }
       const result = await res.json();
-      console.log(result);
+
       if (result.success) {
         toast.success(result.message);
         router.push(callbackUrl);
@@ -92,8 +97,8 @@ export function LoginForm({ className, callbackUrl, ...props }) {
                 <FormError error={errors.password} />
               </div>
 
-              <Button type="submit" className="w-full">
-                Login
+              <Button type="submit" disabled={isSubmitting} className="w-full">
+                {isSubmitting ? "Loading..." : "Login"}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">

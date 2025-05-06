@@ -22,7 +22,7 @@ export function RegistrationForm({ className, ...props }) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     reset,
   } = useForm({
     resolver: zodResolver(registrationSchema),
@@ -109,8 +109,8 @@ export function RegistrationForm({ className, ...props }) {
                 <FormError error={errors.confirmPassword} />
               </div>
 
-              <Button type="submit" className="w-full">
-                Sign Up
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? "Signing Up..." : "Sign Up"}
               </Button>
             </div>
 
