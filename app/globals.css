@@ -142,3 +142,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Add to your globals.css */
+@layer components {
+  .task-priority-high {
+    @apply bg-red-100 text-red-800;
+  }
+  .task-priority-medium {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+  .task-priority-low {
+    @apply bg-green-100 text-green-800;
+  }
+}

@@ -48,8 +48,8 @@ const data = {
       icon: Bot,
     },
     {
-      title: "Teams",
-      url: "/teams",
+      title: "Team",
+      url: "/team",
       icon: BookOpen,
       items: [
         {

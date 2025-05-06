@@ -22,7 +22,7 @@ export default function DashboardLayout({ children }) {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2">
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b bg-background ">
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-2 px-4">
               <SidebarTrigger className="-ml-1" />
@@ -42,10 +42,10 @@ export default function DashboardLayout({ children }) {
               </Breadcrumb>
             </div>
 
-            <div className="px-8">
+            <div className="px-4">
               <form action={logoutAction}>
                 <Button
-                  className="bg-neutral-800 text-white cursor-pointer hover:bg-red-700 hover:text-white text-sm transition-colors duration-200 ease-in-out"
+                  className="bg-red-700 text-white cursor-pointer hover:bg-red-800 hover:text-white text-sm transition-colors duration-200 ease-in-out"
                   variant="outline"
                 >
                   Logout
@@ -54,7 +54,7 @@ export default function DashboardLayout({ children }) {
             </div>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
+        <main className="flex flex-1 flex-col gap-4 p-4 pt-8">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );
