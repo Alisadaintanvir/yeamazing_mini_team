@@ -1,13 +1,13 @@
 import { Plus, Search, ChevronDown, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useState } from "react";
 
 function TeamSelection({
   currentTeam,
@@ -15,12 +15,22 @@ function TeamSelection({
   searchTerm,
   setSelectedTeam,
   selectedTeam,
+  onOpenCreateTeamModal,
 }) {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const handleCreateTeamClick = () => {
+    setDropdownOpen(false); // Close the dropdown first
+    setTimeout(() => {
+      onOpenCreateTeamModal(); // Then open the modal
+    }, 0);
+  };
+
   return (
     <div className="flex flex-col sm:flex-row justify-between gap-4">
       <div className="flex items-center gap-4">
         <Users className="h-6 w-6" />
-        <DropdownMenu>
+        <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="flex items-center gap-2">
               {currentTeam?.name || "Select Team"}
@@ -31,13 +41,19 @@ function TeamSelection({
             {teams.map((team) => (
               <DropdownMenuItem
                 key={team.id}
-                onClick={() => setSelectedTeam(team.id)}
+                onClick={() => {
+                  setSelectedTeam(team.id);
+                  setDropdownOpen(false);
+                }}
                 className={selectedTeam === team.id ? "bg-gray-100" : ""}
               >
                 {team.name}
               </DropdownMenuItem>
             ))}
-            <DropdownMenuItem className="text-blue-500">
+            <DropdownMenuItem
+              className="text-blue-500"
+              onClick={handleCreateTeamClick}
+            >
               <Plus className="h-4 w-4 mr-2" />
               Create New Team
             </DropdownMenuItem>

@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-
 import TeamStats from "@/components/team/TeamStats";
 import MemberTable from "@/components/team/MemberTable";
 import TeamSelection from "@/components/team/TeamSelection";
-import { AddTeamModal } from "@/components/team/AddTeamModal";
+import CreateTeamModal from "@/components/team/CreateTeamModal";
 
 const TeamDashboard = () => {
   // Sample data structure
@@ -48,6 +47,7 @@ const TeamDashboard = () => {
   const [selectedTeam, setSelectedTeam] = useState(teams[0].id);
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddingMember, setIsAddingMember] = useState(false);
+  const [isCreateTeamModalOpen, setIsCreateTeamModalOpen] = useState(false);
 
   const currentTeam = teams.find((team) => team.id === selectedTeam);
   const roles = ["Admin", "Manager", "Member"];
@@ -90,6 +90,16 @@ const TeamDashboard = () => {
     );
   };
 
+  const handleCreateTeam = (teamName) => {
+    const newTeam = {
+      id: `team-${teams.length + 1}`,
+      name: teamName,
+      members: [],
+    };
+    setTeams([...teams, newTeam]);
+    setSelectedTeam(newTeam.id);
+  };
+
   return (
     <div className="space-y-6">
       {/* Team Selection */}
@@ -99,6 +109,7 @@ const TeamDashboard = () => {
         currentTeam={currentTeam}
         setSelectedTeam={setSelectedTeam}
         selectedTeam={selectedTeam}
+        onOpenCreateTeamModal={() => setIsCreateTeamModalOpen(true)}
       />
 
       {/* Members Table */}
@@ -109,11 +120,16 @@ const TeamDashboard = () => {
         updateMemberRole={updateMemberRole}
         deleteMember={deleteMember}
       />
+
       {/* Team Stats */}
       <TeamStats currentTeam={currentTeam} roles={roles} />
 
-      {/* Add Team Modal */}
-      <AddTeamModal onTeamAdded={() => {}} />
+      {/* Create Team Modal */}
+      <CreateTeamModal
+        open={isCreateTeamModalOpen}
+        onOpenChange={setIsCreateTeamModalOpen}
+        onCreateTeam={handleCreateTeam}
+      />
     </div>
   );
 };
