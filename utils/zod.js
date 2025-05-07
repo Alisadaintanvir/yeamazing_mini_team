@@ -17,9 +17,51 @@ export const loginSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters long"),
 });
 
-export const teamFormSchema = z.object({
-  name: z.string().min(2, {
-    message: "Team name must be at least 2 characters.",
+export const teamSchema = z.object({
+  name: z
+    .string()
+    .min(2, "Team name must be at least 2 characters")
+    .max(50, "Team name cannot exceed 50 characters")
+    .regex(
+      /^[a-zA-Z0-9\s-_]+$/,
+      "Team name can only contain letters, numbers, spaces, hyphens, and underscores"
+    ),
+  description: z
+    .string()
+    .max(500, "Description cannot exceed 500 characters")
+    .optional()
+    .nullable(),
+});
+
+// Schema for adding members to a team
+export const addTeamMemberSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  role: z.enum(["ADMIN", "MEMBER"], {
+    errorMap: () => ({ message: "Role must be either ADMIN or MEMBER" }),
   }),
-  description: z.string().optional(),
+});
+
+// Schema for updating team details
+export const updateTeamSchema = z.object({
+  name: z
+    .string()
+    .min(2, "Team name must be at least 2 characters")
+    .max(50, "Team name cannot exceed 50 characters")
+    .regex(
+      /^[a-zA-Z0-9\s-_]+$/,
+      "Team name can only contain letters, numbers, spaces, hyphens, and underscores"
+    )
+    .optional(),
+  description: z
+    .string()
+    .max(500, "Description cannot exceed 500 characters")
+    .optional()
+    .nullable(),
+});
+
+// Schema for team member role update
+export const updateTeamMemberRoleSchema = z.object({
+  role: z.enum(["ADMIN", "MEMBER"], {
+    errorMap: () => ({ message: "Role must be either ADMIN or MEMBER" }),
+  }),
 });

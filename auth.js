@@ -34,7 +34,11 @@ const providers = [
 
         user = existingUser;
 
-        return user;
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+        };
       } catch (error) {
         throw new Error("An error occurred during authentication");
       }
@@ -49,5 +53,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   session: {
     strategy: "jwt",
+    maxAge: 60 * 60 * 24 * 7,
+  },
+
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id;
+      }
+
+      return session;
+    },
   },
 });

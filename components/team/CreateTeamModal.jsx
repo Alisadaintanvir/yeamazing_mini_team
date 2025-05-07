@@ -20,12 +20,12 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { teamFormSchema } from "@/utils/zod";
+import { teamSchema } from "@/utils/zod";
 import { Textarea } from "../ui/textarea";
 
 function CreateTeamModal({ open, onOpenChange, onCreateTeam }) {
   const form = useForm({
-    resolver: zodResolver(teamFormSchema),
+    resolver: zodResolver(teamSchema),
     defaultValues: {
       name: "",
       description: "",

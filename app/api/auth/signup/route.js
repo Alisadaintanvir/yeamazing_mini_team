@@ -1,3 +1,4 @@
+import { defaultUserService } from "@/actions/defaultService";
 import { hashPassword } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { registrationSchema } from "@/utils/zod";
@@ -34,13 +35,16 @@ export async function POST(req) {
 
     const hashedPassword = await hashPassword(password);
 
-    await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword, // In a real application, make sure to hash the password before saving it
       },
     });
+
+    // Create default user service
+    await defaultUserService(user.id);
 
     return NextResponse.json(
       {

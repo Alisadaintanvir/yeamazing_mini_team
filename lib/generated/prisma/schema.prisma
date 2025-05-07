@@ -29,4 +29,39 @@ model User {
   role      Role     @default(MEMBER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  teams      TeamMembership[]
+  ownedTeams Team[]           @relation("TeamOwner")
+}
+
+model Team {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  ownerId String
+  owner   User   @relation("TeamOwner", fields: [ownerId], references: [id])
+
+  members TeamMembership[]
+}
+
+model TeamMembership {
+  id       String   @id @default(uuid())
+  userId   String
+  teamId   String
+  role     TeamRole @default(MEMBER)
+  joinedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  team Team @relation(fields: [teamId], references: [id])
+
+  @@unique([userId, teamId])
+}
+
+enum TeamRole {
+  OWNER
+  ADMIN
+  MEMBER
 }

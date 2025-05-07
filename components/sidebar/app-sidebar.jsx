@@ -28,6 +28,7 @@ import { NavProjects } from "./nav-projects";
 import { NavSecondary } from "./nav-secondary";
 import { NavUser } from "./nav-user";
 import Link from "next/link";
+import { SessionProvider, useSession } from "next-auth/react";
 
 const data = {
   user: {
@@ -135,7 +136,9 @@ export function AppSidebar({ ...props }) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <SessionProvider>
+          <NavUser user={data.user} />
+        </SessionProvider>
       </SidebarFooter>
     </Sidebar>
   );

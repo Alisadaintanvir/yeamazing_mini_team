@@ -18,6 +18,16 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  * 
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
+/**
+ * Model Team
+ * 
+ */
+export type Team = $Result.DefaultSelection<Prisma.$TeamPayload>
+/**
+ * Model TeamMembership
+ * 
+ */
+export type TeamMembership = $Result.DefaultSelection<Prisma.$TeamMembershipPayload>
 
 /**
  * Enums
@@ -31,11 +41,24 @@ export namespace $Enums {
 
 export type Role = (typeof Role)[keyof typeof Role]
 
+
+export const TeamRole: {
+  OWNER: 'OWNER',
+  ADMIN: 'ADMIN',
+  MEMBER: 'MEMBER'
+};
+
+export type TeamRole = (typeof TeamRole)[keyof typeof TeamRole]
+
 }
 
 export type Role = $Enums.Role
 
 export const Role: typeof $Enums.Role
+
+export type TeamRole = $Enums.TeamRole
+
+export const TeamRole: typeof $Enums.TeamRole
 
 /**
  * ##  Prisma Client ʲˢ
@@ -171,6 +194,26 @@ export class PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.team`: Exposes CRUD operations for the **Team** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Teams
+    * const teams = await prisma.team.findMany()
+    * ```
+    */
+  get team(): Prisma.TeamDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.teamMembership`: Exposes CRUD operations for the **TeamMembership** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TeamMemberships
+    * const teamMemberships = await prisma.teamMembership.findMany()
+    * ```
+    */
+  get teamMembership(): Prisma.TeamMembershipDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -611,7 +654,9 @@ export namespace Prisma {
 
 
   export const ModelName: {
-    User: 'User'
+    User: 'User',
+    Team: 'Team',
+    TeamMembership: 'TeamMembership'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -630,7 +675,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user"
+      modelProps: "user" | "team" | "teamMembership"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -705,6 +750,154 @@ export namespace Prisma {
           count: {
             args: Prisma.UserCountArgs<ExtArgs>
             result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
+      Team: {
+        payload: Prisma.$TeamPayload<ExtArgs>
+        fields: Prisma.TeamFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TeamFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TeamFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamPayload>
+          }
+          findFirst: {
+            args: Prisma.TeamFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TeamFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamPayload>
+          }
+          findMany: {
+            args: Prisma.TeamFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamPayload>[]
+          }
+          create: {
+            args: Prisma.TeamCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamPayload>
+          }
+          createMany: {
+            args: Prisma.TeamCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TeamCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamPayload>[]
+          }
+          delete: {
+            args: Prisma.TeamDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamPayload>
+          }
+          update: {
+            args: Prisma.TeamUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamPayload>
+          }
+          deleteMany: {
+            args: Prisma.TeamDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TeamUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TeamUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamPayload>[]
+          }
+          upsert: {
+            args: Prisma.TeamUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamPayload>
+          }
+          aggregate: {
+            args: Prisma.TeamAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTeam>
+          }
+          groupBy: {
+            args: Prisma.TeamGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TeamGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TeamCountArgs<ExtArgs>
+            result: $Utils.Optional<TeamCountAggregateOutputType> | number
+          }
+        }
+      }
+      TeamMembership: {
+        payload: Prisma.$TeamMembershipPayload<ExtArgs>
+        fields: Prisma.TeamMembershipFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TeamMembershipFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamMembershipPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TeamMembershipFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamMembershipPayload>
+          }
+          findFirst: {
+            args: Prisma.TeamMembershipFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamMembershipPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TeamMembershipFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamMembershipPayload>
+          }
+          findMany: {
+            args: Prisma.TeamMembershipFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamMembershipPayload>[]
+          }
+          create: {
+            args: Prisma.TeamMembershipCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamMembershipPayload>
+          }
+          createMany: {
+            args: Prisma.TeamMembershipCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TeamMembershipCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamMembershipPayload>[]
+          }
+          delete: {
+            args: Prisma.TeamMembershipDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamMembershipPayload>
+          }
+          update: {
+            args: Prisma.TeamMembershipUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamMembershipPayload>
+          }
+          deleteMany: {
+            args: Prisma.TeamMembershipDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TeamMembershipUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TeamMembershipUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamMembershipPayload>[]
+          }
+          upsert: {
+            args: Prisma.TeamMembershipUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamMembershipPayload>
+          }
+          aggregate: {
+            args: Prisma.TeamMembershipAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTeamMembership>
+          }
+          groupBy: {
+            args: Prisma.TeamMembershipGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TeamMembershipGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TeamMembershipCountArgs<ExtArgs>
+            result: $Utils.Optional<TeamMembershipCountAggregateOutputType> | number
           }
         }
       }
@@ -793,6 +986,8 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     user?: UserOmit
+    team?: TeamOmit
+    teamMembership?: TeamMembershipOmit
   }
 
   /* Types for Logging */
@@ -881,6 +1076,76 @@ export namespace Prisma {
    * Count Types
    */
 
+
+  /**
+   * Count Type UserCountOutputType
+   */
+
+  export type UserCountOutputType = {
+    teams: number
+    ownedTeams: number
+  }
+
+  export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    teams?: boolean | UserCountOutputTypeCountTeamsArgs
+    ownedTeams?: boolean | UserCountOutputTypeCountOwnedTeamsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCountOutputType
+     */
+    select?: UserCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTeamsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TeamMembershipWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountOwnedTeamsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TeamWhereInput
+  }
+
+
+  /**
+   * Count Type TeamCountOutputType
+   */
+
+  export type TeamCountOutputType = {
+    members: number
+  }
+
+  export type TeamCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    members?: boolean | TeamCountOutputTypeCountMembersArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * TeamCountOutputType without action
+   */
+  export type TeamCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamCountOutputType
+     */
+    select?: TeamCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * TeamCountOutputType without action
+   */
+  export type TeamCountOutputTypeCountMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TeamMembershipWhereInput
+  }
 
 
   /**
@@ -1067,6 +1332,9 @@ export namespace Prisma {
     role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    teams?: boolean | User$teamsArgs<ExtArgs>
+    ownedTeams?: boolean | User$ownedTeamsArgs<ExtArgs>
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1100,10 +1368,20 @@ export namespace Prisma {
   }
 
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "name" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    teams?: boolean | User$teamsArgs<ExtArgs>
+    ownedTeams?: boolean | User$ownedTeamsArgs<ExtArgs>
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
-    objects: {}
+    objects: {
+      teams: Prisma.$TeamMembershipPayload<ExtArgs>[]
+      ownedTeams: Prisma.$TeamPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       email: string
@@ -1506,6 +1784,8 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    teams<T extends User$teamsArgs<ExtArgs> = {}>(args?: Subset<T, User$teamsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    ownedTeams<T extends User$ownedTeamsArgs<ExtArgs> = {}>(args?: Subset<T, User$ownedTeamsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1559,6 +1839,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter, which User to fetch.
      */
     where: UserWhereUniqueInput
@@ -1577,6 +1861,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter, which User to fetch.
      */
     where: UserWhereUniqueInput
@@ -1594,6 +1882,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
     /**
      * Filter, which User to fetch.
      */
@@ -1643,6 +1935,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter, which User to fetch.
      */
     where?: UserWhereInput
@@ -1691,6 +1987,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter, which Users to fetch.
      */
     where?: UserWhereInput
@@ -1733,6 +2033,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
     /**
      * The data needed to create a User.
      */
@@ -1781,6 +2085,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
     /**
      * The data needed to update a User.
      */
@@ -1848,6 +2156,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * The filter to search for the User to update in case it exists.
      */
     where: UserWhereUniqueInput
@@ -1874,6 +2186,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter which User to delete.
      */
     where: UserWhereUniqueInput
@@ -1894,6 +2210,54 @@ export namespace Prisma {
   }
 
   /**
+   * User.teams
+   */
+  export type User$teamsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamMembership
+     */
+    select?: TeamMembershipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamMembership
+     */
+    omit?: TeamMembershipOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamMembershipInclude<ExtArgs> | null
+    where?: TeamMembershipWhereInput
+    orderBy?: TeamMembershipOrderByWithRelationInput | TeamMembershipOrderByWithRelationInput[]
+    cursor?: TeamMembershipWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TeamMembershipScalarFieldEnum | TeamMembershipScalarFieldEnum[]
+  }
+
+  /**
+   * User.ownedTeams
+   */
+  export type User$ownedTeamsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Team
+     */
+    select?: TeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Team
+     */
+    omit?: TeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamInclude<ExtArgs> | null
+    where?: TeamWhereInput
+    orderBy?: TeamOrderByWithRelationInput | TeamOrderByWithRelationInput[]
+    cursor?: TeamWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TeamScalarFieldEnum | TeamScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1905,6 +2269,2177 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Team
+   */
+
+  export type AggregateTeam = {
+    _count: TeamCountAggregateOutputType | null
+    _min: TeamMinAggregateOutputType | null
+    _max: TeamMaxAggregateOutputType | null
+  }
+
+  export type TeamMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    description: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    ownerId: string | null
+  }
+
+  export type TeamMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    description: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    ownerId: string | null
+  }
+
+  export type TeamCountAggregateOutputType = {
+    id: number
+    name: number
+    description: number
+    createdAt: number
+    updatedAt: number
+    ownerId: number
+    _all: number
+  }
+
+
+  export type TeamMinAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    createdAt?: true
+    updatedAt?: true
+    ownerId?: true
+  }
+
+  export type TeamMaxAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    createdAt?: true
+    updatedAt?: true
+    ownerId?: true
+  }
+
+  export type TeamCountAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    createdAt?: true
+    updatedAt?: true
+    ownerId?: true
+    _all?: true
+  }
+
+  export type TeamAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Team to aggregate.
+     */
+    where?: TeamWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Teams to fetch.
+     */
+    orderBy?: TeamOrderByWithRelationInput | TeamOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TeamWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Teams from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Teams.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Teams
+    **/
+    _count?: true | TeamCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TeamMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TeamMaxAggregateInputType
+  }
+
+  export type GetTeamAggregateType<T extends TeamAggregateArgs> = {
+        [P in keyof T & keyof AggregateTeam]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTeam[P]>
+      : GetScalarType<T[P], AggregateTeam[P]>
+  }
+
+
+
+
+  export type TeamGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TeamWhereInput
+    orderBy?: TeamOrderByWithAggregationInput | TeamOrderByWithAggregationInput[]
+    by: TeamScalarFieldEnum[] | TeamScalarFieldEnum
+    having?: TeamScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TeamCountAggregateInputType | true
+    _min?: TeamMinAggregateInputType
+    _max?: TeamMaxAggregateInputType
+  }
+
+  export type TeamGroupByOutputType = {
+    id: string
+    name: string
+    description: string | null
+    createdAt: Date
+    updatedAt: Date
+    ownerId: string
+    _count: TeamCountAggregateOutputType | null
+    _min: TeamMinAggregateOutputType | null
+    _max: TeamMaxAggregateOutputType | null
+  }
+
+  type GetTeamGroupByPayload<T extends TeamGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TeamGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TeamGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TeamGroupByOutputType[P]>
+            : GetScalarType<T[P], TeamGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TeamSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    ownerId?: boolean
+    owner?: boolean | UserDefaultArgs<ExtArgs>
+    members?: boolean | Team$membersArgs<ExtArgs>
+    _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["team"]>
+
+  export type TeamSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    ownerId?: boolean
+    owner?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["team"]>
+
+  export type TeamSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    ownerId?: boolean
+    owner?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["team"]>
+
+  export type TeamSelectScalar = {
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    ownerId?: boolean
+  }
+
+  export type TeamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "createdAt" | "updatedAt" | "ownerId", ExtArgs["result"]["team"]>
+  export type TeamInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    owner?: boolean | UserDefaultArgs<ExtArgs>
+    members?: boolean | Team$membersArgs<ExtArgs>
+    _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type TeamIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    owner?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type TeamIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    owner?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $TeamPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Team"
+    objects: {
+      owner: Prisma.$UserPayload<ExtArgs>
+      members: Prisma.$TeamMembershipPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      description: string | null
+      createdAt: Date
+      updatedAt: Date
+      ownerId: string
+    }, ExtArgs["result"]["team"]>
+    composites: {}
+  }
+
+  type TeamGetPayload<S extends boolean | null | undefined | TeamDefaultArgs> = $Result.GetResult<Prisma.$TeamPayload, S>
+
+  type TeamCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TeamFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TeamCountAggregateInputType | true
+    }
+
+  export interface TeamDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Team'], meta: { name: 'Team' } }
+    /**
+     * Find zero or one Team that matches the filter.
+     * @param {TeamFindUniqueArgs} args - Arguments to find a Team
+     * @example
+     * // Get one Team
+     * const team = await prisma.team.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TeamFindUniqueArgs>(args: SelectSubset<T, TeamFindUniqueArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Team that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TeamFindUniqueOrThrowArgs} args - Arguments to find a Team
+     * @example
+     * // Get one Team
+     * const team = await prisma.team.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TeamFindUniqueOrThrowArgs>(args: SelectSubset<T, TeamFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Team that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamFindFirstArgs} args - Arguments to find a Team
+     * @example
+     * // Get one Team
+     * const team = await prisma.team.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TeamFindFirstArgs>(args?: SelectSubset<T, TeamFindFirstArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Team that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamFindFirstOrThrowArgs} args - Arguments to find a Team
+     * @example
+     * // Get one Team
+     * const team = await prisma.team.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TeamFindFirstOrThrowArgs>(args?: SelectSubset<T, TeamFindFirstOrThrowArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Teams that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Teams
+     * const teams = await prisma.team.findMany()
+     * 
+     * // Get first 10 Teams
+     * const teams = await prisma.team.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const teamWithIdOnly = await prisma.team.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TeamFindManyArgs>(args?: SelectSubset<T, TeamFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Team.
+     * @param {TeamCreateArgs} args - Arguments to create a Team.
+     * @example
+     * // Create one Team
+     * const Team = await prisma.team.create({
+     *   data: {
+     *     // ... data to create a Team
+     *   }
+     * })
+     * 
+     */
+    create<T extends TeamCreateArgs>(args: SelectSubset<T, TeamCreateArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Teams.
+     * @param {TeamCreateManyArgs} args - Arguments to create many Teams.
+     * @example
+     * // Create many Teams
+     * const team = await prisma.team.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TeamCreateManyArgs>(args?: SelectSubset<T, TeamCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Teams and returns the data saved in the database.
+     * @param {TeamCreateManyAndReturnArgs} args - Arguments to create many Teams.
+     * @example
+     * // Create many Teams
+     * const team = await prisma.team.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Teams and only return the `id`
+     * const teamWithIdOnly = await prisma.team.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TeamCreateManyAndReturnArgs>(args?: SelectSubset<T, TeamCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Team.
+     * @param {TeamDeleteArgs} args - Arguments to delete one Team.
+     * @example
+     * // Delete one Team
+     * const Team = await prisma.team.delete({
+     *   where: {
+     *     // ... filter to delete one Team
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TeamDeleteArgs>(args: SelectSubset<T, TeamDeleteArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Team.
+     * @param {TeamUpdateArgs} args - Arguments to update one Team.
+     * @example
+     * // Update one Team
+     * const team = await prisma.team.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TeamUpdateArgs>(args: SelectSubset<T, TeamUpdateArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Teams.
+     * @param {TeamDeleteManyArgs} args - Arguments to filter Teams to delete.
+     * @example
+     * // Delete a few Teams
+     * const { count } = await prisma.team.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TeamDeleteManyArgs>(args?: SelectSubset<T, TeamDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Teams.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Teams
+     * const team = await prisma.team.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TeamUpdateManyArgs>(args: SelectSubset<T, TeamUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Teams and returns the data updated in the database.
+     * @param {TeamUpdateManyAndReturnArgs} args - Arguments to update many Teams.
+     * @example
+     * // Update many Teams
+     * const team = await prisma.team.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Teams and only return the `id`
+     * const teamWithIdOnly = await prisma.team.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TeamUpdateManyAndReturnArgs>(args: SelectSubset<T, TeamUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Team.
+     * @param {TeamUpsertArgs} args - Arguments to update or create a Team.
+     * @example
+     * // Update or create a Team
+     * const team = await prisma.team.upsert({
+     *   create: {
+     *     // ... data to create a Team
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Team we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TeamUpsertArgs>(args: SelectSubset<T, TeamUpsertArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Teams.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamCountArgs} args - Arguments to filter Teams to count.
+     * @example
+     * // Count the number of Teams
+     * const count = await prisma.team.count({
+     *   where: {
+     *     // ... the filter for the Teams we want to count
+     *   }
+     * })
+    **/
+    count<T extends TeamCountArgs>(
+      args?: Subset<T, TeamCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TeamCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Team.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TeamAggregateArgs>(args: Subset<T, TeamAggregateArgs>): Prisma.PrismaPromise<GetTeamAggregateType<T>>
+
+    /**
+     * Group by Team.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TeamGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TeamGroupByArgs['orderBy'] }
+        : { orderBy?: TeamGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TeamGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTeamGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Team model
+   */
+  readonly fields: TeamFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Team.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TeamClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    owner<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    members<T extends Team$membersArgs<ExtArgs> = {}>(args?: Subset<T, Team$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Team model
+   */
+  interface TeamFieldRefs {
+    readonly id: FieldRef<"Team", 'String'>
+    readonly name: FieldRef<"Team", 'String'>
+    readonly description: FieldRef<"Team", 'String'>
+    readonly createdAt: FieldRef<"Team", 'DateTime'>
+    readonly updatedAt: FieldRef<"Team", 'DateTime'>
+    readonly ownerId: FieldRef<"Team", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Team findUnique
+   */
+  export type TeamFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Team
+     */
+    select?: TeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Team
+     */
+    omit?: TeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamInclude<ExtArgs> | null
+    /**
+     * Filter, which Team to fetch.
+     */
+    where: TeamWhereUniqueInput
+  }
+
+  /**
+   * Team findUniqueOrThrow
+   */
+  export type TeamFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Team
+     */
+    select?: TeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Team
+     */
+    omit?: TeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamInclude<ExtArgs> | null
+    /**
+     * Filter, which Team to fetch.
+     */
+    where: TeamWhereUniqueInput
+  }
+
+  /**
+   * Team findFirst
+   */
+  export type TeamFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Team
+     */
+    select?: TeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Team
+     */
+    omit?: TeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamInclude<ExtArgs> | null
+    /**
+     * Filter, which Team to fetch.
+     */
+    where?: TeamWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Teams to fetch.
+     */
+    orderBy?: TeamOrderByWithRelationInput | TeamOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Teams.
+     */
+    cursor?: TeamWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Teams from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Teams.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Teams.
+     */
+    distinct?: TeamScalarFieldEnum | TeamScalarFieldEnum[]
+  }
+
+  /**
+   * Team findFirstOrThrow
+   */
+  export type TeamFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Team
+     */
+    select?: TeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Team
+     */
+    omit?: TeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamInclude<ExtArgs> | null
+    /**
+     * Filter, which Team to fetch.
+     */
+    where?: TeamWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Teams to fetch.
+     */
+    orderBy?: TeamOrderByWithRelationInput | TeamOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Teams.
+     */
+    cursor?: TeamWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Teams from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Teams.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Teams.
+     */
+    distinct?: TeamScalarFieldEnum | TeamScalarFieldEnum[]
+  }
+
+  /**
+   * Team findMany
+   */
+  export type TeamFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Team
+     */
+    select?: TeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Team
+     */
+    omit?: TeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamInclude<ExtArgs> | null
+    /**
+     * Filter, which Teams to fetch.
+     */
+    where?: TeamWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Teams to fetch.
+     */
+    orderBy?: TeamOrderByWithRelationInput | TeamOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Teams.
+     */
+    cursor?: TeamWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Teams from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Teams.
+     */
+    skip?: number
+    distinct?: TeamScalarFieldEnum | TeamScalarFieldEnum[]
+  }
+
+  /**
+   * Team create
+   */
+  export type TeamCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Team
+     */
+    select?: TeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Team
+     */
+    omit?: TeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Team.
+     */
+    data: XOR<TeamCreateInput, TeamUncheckedCreateInput>
+  }
+
+  /**
+   * Team createMany
+   */
+  export type TeamCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Teams.
+     */
+    data: TeamCreateManyInput | TeamCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Team createManyAndReturn
+   */
+  export type TeamCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Team
+     */
+    select?: TeamSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Team
+     */
+    omit?: TeamOmit<ExtArgs> | null
+    /**
+     * The data used to create many Teams.
+     */
+    data: TeamCreateManyInput | TeamCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Team update
+   */
+  export type TeamUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Team
+     */
+    select?: TeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Team
+     */
+    omit?: TeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Team.
+     */
+    data: XOR<TeamUpdateInput, TeamUncheckedUpdateInput>
+    /**
+     * Choose, which Team to update.
+     */
+    where: TeamWhereUniqueInput
+  }
+
+  /**
+   * Team updateMany
+   */
+  export type TeamUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Teams.
+     */
+    data: XOR<TeamUpdateManyMutationInput, TeamUncheckedUpdateManyInput>
+    /**
+     * Filter which Teams to update
+     */
+    where?: TeamWhereInput
+    /**
+     * Limit how many Teams to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Team updateManyAndReturn
+   */
+  export type TeamUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Team
+     */
+    select?: TeamSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Team
+     */
+    omit?: TeamOmit<ExtArgs> | null
+    /**
+     * The data used to update Teams.
+     */
+    data: XOR<TeamUpdateManyMutationInput, TeamUncheckedUpdateManyInput>
+    /**
+     * Filter which Teams to update
+     */
+    where?: TeamWhereInput
+    /**
+     * Limit how many Teams to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Team upsert
+   */
+  export type TeamUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Team
+     */
+    select?: TeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Team
+     */
+    omit?: TeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Team to update in case it exists.
+     */
+    where: TeamWhereUniqueInput
+    /**
+     * In case the Team found by the `where` argument doesn't exist, create a new Team with this data.
+     */
+    create: XOR<TeamCreateInput, TeamUncheckedCreateInput>
+    /**
+     * In case the Team was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TeamUpdateInput, TeamUncheckedUpdateInput>
+  }
+
+  /**
+   * Team delete
+   */
+  export type TeamDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Team
+     */
+    select?: TeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Team
+     */
+    omit?: TeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamInclude<ExtArgs> | null
+    /**
+     * Filter which Team to delete.
+     */
+    where: TeamWhereUniqueInput
+  }
+
+  /**
+   * Team deleteMany
+   */
+  export type TeamDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Teams to delete
+     */
+    where?: TeamWhereInput
+    /**
+     * Limit how many Teams to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Team.members
+   */
+  export type Team$membersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamMembership
+     */
+    select?: TeamMembershipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamMembership
+     */
+    omit?: TeamMembershipOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamMembershipInclude<ExtArgs> | null
+    where?: TeamMembershipWhereInput
+    orderBy?: TeamMembershipOrderByWithRelationInput | TeamMembershipOrderByWithRelationInput[]
+    cursor?: TeamMembershipWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TeamMembershipScalarFieldEnum | TeamMembershipScalarFieldEnum[]
+  }
+
+  /**
+   * Team without action
+   */
+  export type TeamDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Team
+     */
+    select?: TeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Team
+     */
+    omit?: TeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TeamMembership
+   */
+
+  export type AggregateTeamMembership = {
+    _count: TeamMembershipCountAggregateOutputType | null
+    _min: TeamMembershipMinAggregateOutputType | null
+    _max: TeamMembershipMaxAggregateOutputType | null
+  }
+
+  export type TeamMembershipMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    teamId: string | null
+    role: $Enums.TeamRole | null
+    joinedAt: Date | null
+  }
+
+  export type TeamMembershipMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    teamId: string | null
+    role: $Enums.TeamRole | null
+    joinedAt: Date | null
+  }
+
+  export type TeamMembershipCountAggregateOutputType = {
+    id: number
+    userId: number
+    teamId: number
+    role: number
+    joinedAt: number
+    _all: number
+  }
+
+
+  export type TeamMembershipMinAggregateInputType = {
+    id?: true
+    userId?: true
+    teamId?: true
+    role?: true
+    joinedAt?: true
+  }
+
+  export type TeamMembershipMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    teamId?: true
+    role?: true
+    joinedAt?: true
+  }
+
+  export type TeamMembershipCountAggregateInputType = {
+    id?: true
+    userId?: true
+    teamId?: true
+    role?: true
+    joinedAt?: true
+    _all?: true
+  }
+
+  export type TeamMembershipAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TeamMembership to aggregate.
+     */
+    where?: TeamMembershipWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TeamMemberships to fetch.
+     */
+    orderBy?: TeamMembershipOrderByWithRelationInput | TeamMembershipOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TeamMembershipWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TeamMemberships from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TeamMemberships.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TeamMemberships
+    **/
+    _count?: true | TeamMembershipCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TeamMembershipMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TeamMembershipMaxAggregateInputType
+  }
+
+  export type GetTeamMembershipAggregateType<T extends TeamMembershipAggregateArgs> = {
+        [P in keyof T & keyof AggregateTeamMembership]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTeamMembership[P]>
+      : GetScalarType<T[P], AggregateTeamMembership[P]>
+  }
+
+
+
+
+  export type TeamMembershipGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TeamMembershipWhereInput
+    orderBy?: TeamMembershipOrderByWithAggregationInput | TeamMembershipOrderByWithAggregationInput[]
+    by: TeamMembershipScalarFieldEnum[] | TeamMembershipScalarFieldEnum
+    having?: TeamMembershipScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TeamMembershipCountAggregateInputType | true
+    _min?: TeamMembershipMinAggregateInputType
+    _max?: TeamMembershipMaxAggregateInputType
+  }
+
+  export type TeamMembershipGroupByOutputType = {
+    id: string
+    userId: string
+    teamId: string
+    role: $Enums.TeamRole
+    joinedAt: Date
+    _count: TeamMembershipCountAggregateOutputType | null
+    _min: TeamMembershipMinAggregateOutputType | null
+    _max: TeamMembershipMaxAggregateOutputType | null
+  }
+
+  type GetTeamMembershipGroupByPayload<T extends TeamMembershipGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TeamMembershipGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TeamMembershipGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TeamMembershipGroupByOutputType[P]>
+            : GetScalarType<T[P], TeamMembershipGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TeamMembershipSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    teamId?: boolean
+    role?: boolean
+    joinedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["teamMembership"]>
+
+  export type TeamMembershipSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    teamId?: boolean
+    role?: boolean
+    joinedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["teamMembership"]>
+
+  export type TeamMembershipSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    teamId?: boolean
+    role?: boolean
+    joinedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["teamMembership"]>
+
+  export type TeamMembershipSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    teamId?: boolean
+    role?: boolean
+    joinedAt?: boolean
+  }
+
+  export type TeamMembershipOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "teamId" | "role" | "joinedAt", ExtArgs["result"]["teamMembership"]>
+  export type TeamMembershipInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }
+  export type TeamMembershipIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }
+  export type TeamMembershipIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }
+
+  export type $TeamMembershipPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TeamMembership"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      team: Prisma.$TeamPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      teamId: string
+      role: $Enums.TeamRole
+      joinedAt: Date
+    }, ExtArgs["result"]["teamMembership"]>
+    composites: {}
+  }
+
+  type TeamMembershipGetPayload<S extends boolean | null | undefined | TeamMembershipDefaultArgs> = $Result.GetResult<Prisma.$TeamMembershipPayload, S>
+
+  type TeamMembershipCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TeamMembershipFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TeamMembershipCountAggregateInputType | true
+    }
+
+  export interface TeamMembershipDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TeamMembership'], meta: { name: 'TeamMembership' } }
+    /**
+     * Find zero or one TeamMembership that matches the filter.
+     * @param {TeamMembershipFindUniqueArgs} args - Arguments to find a TeamMembership
+     * @example
+     * // Get one TeamMembership
+     * const teamMembership = await prisma.teamMembership.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TeamMembershipFindUniqueArgs>(args: SelectSubset<T, TeamMembershipFindUniqueArgs<ExtArgs>>): Prisma__TeamMembershipClient<$Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TeamMembership that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TeamMembershipFindUniqueOrThrowArgs} args - Arguments to find a TeamMembership
+     * @example
+     * // Get one TeamMembership
+     * const teamMembership = await prisma.teamMembership.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TeamMembershipFindUniqueOrThrowArgs>(args: SelectSubset<T, TeamMembershipFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TeamMembershipClient<$Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TeamMembership that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamMembershipFindFirstArgs} args - Arguments to find a TeamMembership
+     * @example
+     * // Get one TeamMembership
+     * const teamMembership = await prisma.teamMembership.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TeamMembershipFindFirstArgs>(args?: SelectSubset<T, TeamMembershipFindFirstArgs<ExtArgs>>): Prisma__TeamMembershipClient<$Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TeamMembership that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamMembershipFindFirstOrThrowArgs} args - Arguments to find a TeamMembership
+     * @example
+     * // Get one TeamMembership
+     * const teamMembership = await prisma.teamMembership.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TeamMembershipFindFirstOrThrowArgs>(args?: SelectSubset<T, TeamMembershipFindFirstOrThrowArgs<ExtArgs>>): Prisma__TeamMembershipClient<$Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TeamMemberships that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamMembershipFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TeamMemberships
+     * const teamMemberships = await prisma.teamMembership.findMany()
+     * 
+     * // Get first 10 TeamMemberships
+     * const teamMemberships = await prisma.teamMembership.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const teamMembershipWithIdOnly = await prisma.teamMembership.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TeamMembershipFindManyArgs>(args?: SelectSubset<T, TeamMembershipFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TeamMembership.
+     * @param {TeamMembershipCreateArgs} args - Arguments to create a TeamMembership.
+     * @example
+     * // Create one TeamMembership
+     * const TeamMembership = await prisma.teamMembership.create({
+     *   data: {
+     *     // ... data to create a TeamMembership
+     *   }
+     * })
+     * 
+     */
+    create<T extends TeamMembershipCreateArgs>(args: SelectSubset<T, TeamMembershipCreateArgs<ExtArgs>>): Prisma__TeamMembershipClient<$Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TeamMemberships.
+     * @param {TeamMembershipCreateManyArgs} args - Arguments to create many TeamMemberships.
+     * @example
+     * // Create many TeamMemberships
+     * const teamMembership = await prisma.teamMembership.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TeamMembershipCreateManyArgs>(args?: SelectSubset<T, TeamMembershipCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TeamMemberships and returns the data saved in the database.
+     * @param {TeamMembershipCreateManyAndReturnArgs} args - Arguments to create many TeamMemberships.
+     * @example
+     * // Create many TeamMemberships
+     * const teamMembership = await prisma.teamMembership.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TeamMemberships and only return the `id`
+     * const teamMembershipWithIdOnly = await prisma.teamMembership.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TeamMembershipCreateManyAndReturnArgs>(args?: SelectSubset<T, TeamMembershipCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TeamMembership.
+     * @param {TeamMembershipDeleteArgs} args - Arguments to delete one TeamMembership.
+     * @example
+     * // Delete one TeamMembership
+     * const TeamMembership = await prisma.teamMembership.delete({
+     *   where: {
+     *     // ... filter to delete one TeamMembership
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TeamMembershipDeleteArgs>(args: SelectSubset<T, TeamMembershipDeleteArgs<ExtArgs>>): Prisma__TeamMembershipClient<$Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TeamMembership.
+     * @param {TeamMembershipUpdateArgs} args - Arguments to update one TeamMembership.
+     * @example
+     * // Update one TeamMembership
+     * const teamMembership = await prisma.teamMembership.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TeamMembershipUpdateArgs>(args: SelectSubset<T, TeamMembershipUpdateArgs<ExtArgs>>): Prisma__TeamMembershipClient<$Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TeamMemberships.
+     * @param {TeamMembershipDeleteManyArgs} args - Arguments to filter TeamMemberships to delete.
+     * @example
+     * // Delete a few TeamMemberships
+     * const { count } = await prisma.teamMembership.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TeamMembershipDeleteManyArgs>(args?: SelectSubset<T, TeamMembershipDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TeamMemberships.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamMembershipUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TeamMemberships
+     * const teamMembership = await prisma.teamMembership.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TeamMembershipUpdateManyArgs>(args: SelectSubset<T, TeamMembershipUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TeamMemberships and returns the data updated in the database.
+     * @param {TeamMembershipUpdateManyAndReturnArgs} args - Arguments to update many TeamMemberships.
+     * @example
+     * // Update many TeamMemberships
+     * const teamMembership = await prisma.teamMembership.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TeamMemberships and only return the `id`
+     * const teamMembershipWithIdOnly = await prisma.teamMembership.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TeamMembershipUpdateManyAndReturnArgs>(args: SelectSubset<T, TeamMembershipUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TeamMembership.
+     * @param {TeamMembershipUpsertArgs} args - Arguments to update or create a TeamMembership.
+     * @example
+     * // Update or create a TeamMembership
+     * const teamMembership = await prisma.teamMembership.upsert({
+     *   create: {
+     *     // ... data to create a TeamMembership
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TeamMembership we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TeamMembershipUpsertArgs>(args: SelectSubset<T, TeamMembershipUpsertArgs<ExtArgs>>): Prisma__TeamMembershipClient<$Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TeamMemberships.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamMembershipCountArgs} args - Arguments to filter TeamMemberships to count.
+     * @example
+     * // Count the number of TeamMemberships
+     * const count = await prisma.teamMembership.count({
+     *   where: {
+     *     // ... the filter for the TeamMemberships we want to count
+     *   }
+     * })
+    **/
+    count<T extends TeamMembershipCountArgs>(
+      args?: Subset<T, TeamMembershipCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TeamMembershipCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TeamMembership.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamMembershipAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TeamMembershipAggregateArgs>(args: Subset<T, TeamMembershipAggregateArgs>): Prisma.PrismaPromise<GetTeamMembershipAggregateType<T>>
+
+    /**
+     * Group by TeamMembership.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamMembershipGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TeamMembershipGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TeamMembershipGroupByArgs['orderBy'] }
+        : { orderBy?: TeamMembershipGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TeamMembershipGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTeamMembershipGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TeamMembership model
+   */
+  readonly fields: TeamMembershipFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TeamMembership.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TeamMembershipClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TeamMembership model
+   */
+  interface TeamMembershipFieldRefs {
+    readonly id: FieldRef<"TeamMembership", 'String'>
+    readonly userId: FieldRef<"TeamMembership", 'String'>
+    readonly teamId: FieldRef<"TeamMembership", 'String'>
+    readonly role: FieldRef<"TeamMembership", 'TeamRole'>
+    readonly joinedAt: FieldRef<"TeamMembership", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TeamMembership findUnique
+   */
+  export type TeamMembershipFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamMembership
+     */
+    select?: TeamMembershipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamMembership
+     */
+    omit?: TeamMembershipOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamMembershipInclude<ExtArgs> | null
+    /**
+     * Filter, which TeamMembership to fetch.
+     */
+    where: TeamMembershipWhereUniqueInput
+  }
+
+  /**
+   * TeamMembership findUniqueOrThrow
+   */
+  export type TeamMembershipFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamMembership
+     */
+    select?: TeamMembershipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamMembership
+     */
+    omit?: TeamMembershipOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamMembershipInclude<ExtArgs> | null
+    /**
+     * Filter, which TeamMembership to fetch.
+     */
+    where: TeamMembershipWhereUniqueInput
+  }
+
+  /**
+   * TeamMembership findFirst
+   */
+  export type TeamMembershipFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamMembership
+     */
+    select?: TeamMembershipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamMembership
+     */
+    omit?: TeamMembershipOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamMembershipInclude<ExtArgs> | null
+    /**
+     * Filter, which TeamMembership to fetch.
+     */
+    where?: TeamMembershipWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TeamMemberships to fetch.
+     */
+    orderBy?: TeamMembershipOrderByWithRelationInput | TeamMembershipOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TeamMemberships.
+     */
+    cursor?: TeamMembershipWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TeamMemberships from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TeamMemberships.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TeamMemberships.
+     */
+    distinct?: TeamMembershipScalarFieldEnum | TeamMembershipScalarFieldEnum[]
+  }
+
+  /**
+   * TeamMembership findFirstOrThrow
+   */
+  export type TeamMembershipFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamMembership
+     */
+    select?: TeamMembershipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamMembership
+     */
+    omit?: TeamMembershipOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamMembershipInclude<ExtArgs> | null
+    /**
+     * Filter, which TeamMembership to fetch.
+     */
+    where?: TeamMembershipWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TeamMemberships to fetch.
+     */
+    orderBy?: TeamMembershipOrderByWithRelationInput | TeamMembershipOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TeamMemberships.
+     */
+    cursor?: TeamMembershipWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TeamMemberships from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TeamMemberships.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TeamMemberships.
+     */
+    distinct?: TeamMembershipScalarFieldEnum | TeamMembershipScalarFieldEnum[]
+  }
+
+  /**
+   * TeamMembership findMany
+   */
+  export type TeamMembershipFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamMembership
+     */
+    select?: TeamMembershipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamMembership
+     */
+    omit?: TeamMembershipOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamMembershipInclude<ExtArgs> | null
+    /**
+     * Filter, which TeamMemberships to fetch.
+     */
+    where?: TeamMembershipWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TeamMemberships to fetch.
+     */
+    orderBy?: TeamMembershipOrderByWithRelationInput | TeamMembershipOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TeamMemberships.
+     */
+    cursor?: TeamMembershipWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TeamMemberships from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TeamMemberships.
+     */
+    skip?: number
+    distinct?: TeamMembershipScalarFieldEnum | TeamMembershipScalarFieldEnum[]
+  }
+
+  /**
+   * TeamMembership create
+   */
+  export type TeamMembershipCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamMembership
+     */
+    select?: TeamMembershipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamMembership
+     */
+    omit?: TeamMembershipOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamMembershipInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TeamMembership.
+     */
+    data: XOR<TeamMembershipCreateInput, TeamMembershipUncheckedCreateInput>
+  }
+
+  /**
+   * TeamMembership createMany
+   */
+  export type TeamMembershipCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TeamMemberships.
+     */
+    data: TeamMembershipCreateManyInput | TeamMembershipCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TeamMembership createManyAndReturn
+   */
+  export type TeamMembershipCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamMembership
+     */
+    select?: TeamMembershipSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamMembership
+     */
+    omit?: TeamMembershipOmit<ExtArgs> | null
+    /**
+     * The data used to create many TeamMemberships.
+     */
+    data: TeamMembershipCreateManyInput | TeamMembershipCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamMembershipIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TeamMembership update
+   */
+  export type TeamMembershipUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamMembership
+     */
+    select?: TeamMembershipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamMembership
+     */
+    omit?: TeamMembershipOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamMembershipInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TeamMembership.
+     */
+    data: XOR<TeamMembershipUpdateInput, TeamMembershipUncheckedUpdateInput>
+    /**
+     * Choose, which TeamMembership to update.
+     */
+    where: TeamMembershipWhereUniqueInput
+  }
+
+  /**
+   * TeamMembership updateMany
+   */
+  export type TeamMembershipUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TeamMemberships.
+     */
+    data: XOR<TeamMembershipUpdateManyMutationInput, TeamMembershipUncheckedUpdateManyInput>
+    /**
+     * Filter which TeamMemberships to update
+     */
+    where?: TeamMembershipWhereInput
+    /**
+     * Limit how many TeamMemberships to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TeamMembership updateManyAndReturn
+   */
+  export type TeamMembershipUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamMembership
+     */
+    select?: TeamMembershipSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamMembership
+     */
+    omit?: TeamMembershipOmit<ExtArgs> | null
+    /**
+     * The data used to update TeamMemberships.
+     */
+    data: XOR<TeamMembershipUpdateManyMutationInput, TeamMembershipUncheckedUpdateManyInput>
+    /**
+     * Filter which TeamMemberships to update
+     */
+    where?: TeamMembershipWhereInput
+    /**
+     * Limit how many TeamMemberships to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamMembershipIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TeamMembership upsert
+   */
+  export type TeamMembershipUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamMembership
+     */
+    select?: TeamMembershipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamMembership
+     */
+    omit?: TeamMembershipOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamMembershipInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TeamMembership to update in case it exists.
+     */
+    where: TeamMembershipWhereUniqueInput
+    /**
+     * In case the TeamMembership found by the `where` argument doesn't exist, create a new TeamMembership with this data.
+     */
+    create: XOR<TeamMembershipCreateInput, TeamMembershipUncheckedCreateInput>
+    /**
+     * In case the TeamMembership was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TeamMembershipUpdateInput, TeamMembershipUncheckedUpdateInput>
+  }
+
+  /**
+   * TeamMembership delete
+   */
+  export type TeamMembershipDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamMembership
+     */
+    select?: TeamMembershipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamMembership
+     */
+    omit?: TeamMembershipOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamMembershipInclude<ExtArgs> | null
+    /**
+     * Filter which TeamMembership to delete.
+     */
+    where: TeamMembershipWhereUniqueInput
+  }
+
+  /**
+   * TeamMembership deleteMany
+   */
+  export type TeamMembershipDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TeamMemberships to delete
+     */
+    where?: TeamMembershipWhereInput
+    /**
+     * Limit how many TeamMemberships to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TeamMembership without action
+   */
+  export type TeamMembershipDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamMembership
+     */
+    select?: TeamMembershipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamMembership
+     */
+    omit?: TeamMembershipOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamMembershipInclude<ExtArgs> | null
   }
 
 
@@ -1935,6 +4470,29 @@ export namespace Prisma {
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+  export const TeamScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    description: 'description',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    ownerId: 'ownerId'
+  };
+
+  export type TeamScalarFieldEnum = (typeof TeamScalarFieldEnum)[keyof typeof TeamScalarFieldEnum]
+
+
+  export const TeamMembershipScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    teamId: 'teamId',
+    role: 'role',
+    joinedAt: 'joinedAt'
+  };
+
+  export type TeamMembershipScalarFieldEnum = (typeof TeamMembershipScalarFieldEnum)[keyof typeof TeamMembershipScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -1949,6 +4507,14 @@ export namespace Prisma {
   };
 
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
   /**
@@ -1999,6 +4565,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'TeamRole'
+   */
+  export type EnumTeamRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TeamRole'>
+    
+
+
+  /**
+   * Reference to a field of type 'TeamRole[]'
+   */
+  export type ListEnumTeamRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TeamRole[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -2026,6 +4606,8 @@ export namespace Prisma {
     role?: EnumRoleFilter<"User"> | $Enums.Role
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    teams?: TeamMembershipListRelationFilter
+    ownedTeams?: TeamListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -2036,6 +4618,8 @@ export namespace Prisma {
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    teams?: TeamMembershipOrderByRelationAggregateInput
+    ownedTeams?: TeamOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -2049,6 +4633,8 @@ export namespace Prisma {
     role?: EnumRoleFilter<"User"> | $Enums.Role
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    teams?: TeamMembershipListRelationFilter
+    ownedTeams?: TeamListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -2077,6 +4663,128 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
 
+  export type TeamWhereInput = {
+    AND?: TeamWhereInput | TeamWhereInput[]
+    OR?: TeamWhereInput[]
+    NOT?: TeamWhereInput | TeamWhereInput[]
+    id?: StringFilter<"Team"> | string
+    name?: StringFilter<"Team"> | string
+    description?: StringNullableFilter<"Team"> | string | null
+    createdAt?: DateTimeFilter<"Team"> | Date | string
+    updatedAt?: DateTimeFilter<"Team"> | Date | string
+    ownerId?: StringFilter<"Team"> | string
+    owner?: XOR<UserScalarRelationFilter, UserWhereInput>
+    members?: TeamMembershipListRelationFilter
+  }
+
+  export type TeamOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    ownerId?: SortOrder
+    owner?: UserOrderByWithRelationInput
+    members?: TeamMembershipOrderByRelationAggregateInput
+  }
+
+  export type TeamWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: TeamWhereInput | TeamWhereInput[]
+    OR?: TeamWhereInput[]
+    NOT?: TeamWhereInput | TeamWhereInput[]
+    name?: StringFilter<"Team"> | string
+    description?: StringNullableFilter<"Team"> | string | null
+    createdAt?: DateTimeFilter<"Team"> | Date | string
+    updatedAt?: DateTimeFilter<"Team"> | Date | string
+    ownerId?: StringFilter<"Team"> | string
+    owner?: XOR<UserScalarRelationFilter, UserWhereInput>
+    members?: TeamMembershipListRelationFilter
+  }, "id">
+
+  export type TeamOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    ownerId?: SortOrder
+    _count?: TeamCountOrderByAggregateInput
+    _max?: TeamMaxOrderByAggregateInput
+    _min?: TeamMinOrderByAggregateInput
+  }
+
+  export type TeamScalarWhereWithAggregatesInput = {
+    AND?: TeamScalarWhereWithAggregatesInput | TeamScalarWhereWithAggregatesInput[]
+    OR?: TeamScalarWhereWithAggregatesInput[]
+    NOT?: TeamScalarWhereWithAggregatesInput | TeamScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Team"> | string
+    name?: StringWithAggregatesFilter<"Team"> | string
+    description?: StringNullableWithAggregatesFilter<"Team"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Team"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Team"> | Date | string
+    ownerId?: StringWithAggregatesFilter<"Team"> | string
+  }
+
+  export type TeamMembershipWhereInput = {
+    AND?: TeamMembershipWhereInput | TeamMembershipWhereInput[]
+    OR?: TeamMembershipWhereInput[]
+    NOT?: TeamMembershipWhereInput | TeamMembershipWhereInput[]
+    id?: StringFilter<"TeamMembership"> | string
+    userId?: StringFilter<"TeamMembership"> | string
+    teamId?: StringFilter<"TeamMembership"> | string
+    role?: EnumTeamRoleFilter<"TeamMembership"> | $Enums.TeamRole
+    joinedAt?: DateTimeFilter<"TeamMembership"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+  }
+
+  export type TeamMembershipOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    teamId?: SortOrder
+    role?: SortOrder
+    joinedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    team?: TeamOrderByWithRelationInput
+  }
+
+  export type TeamMembershipWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId_teamId?: TeamMembershipUserIdTeamIdCompoundUniqueInput
+    AND?: TeamMembershipWhereInput | TeamMembershipWhereInput[]
+    OR?: TeamMembershipWhereInput[]
+    NOT?: TeamMembershipWhereInput | TeamMembershipWhereInput[]
+    userId?: StringFilter<"TeamMembership"> | string
+    teamId?: StringFilter<"TeamMembership"> | string
+    role?: EnumTeamRoleFilter<"TeamMembership"> | $Enums.TeamRole
+    joinedAt?: DateTimeFilter<"TeamMembership"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+  }, "id" | "userId_teamId">
+
+  export type TeamMembershipOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    teamId?: SortOrder
+    role?: SortOrder
+    joinedAt?: SortOrder
+    _count?: TeamMembershipCountOrderByAggregateInput
+    _max?: TeamMembershipMaxOrderByAggregateInput
+    _min?: TeamMembershipMinOrderByAggregateInput
+  }
+
+  export type TeamMembershipScalarWhereWithAggregatesInput = {
+    AND?: TeamMembershipScalarWhereWithAggregatesInput | TeamMembershipScalarWhereWithAggregatesInput[]
+    OR?: TeamMembershipScalarWhereWithAggregatesInput[]
+    NOT?: TeamMembershipScalarWhereWithAggregatesInput | TeamMembershipScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TeamMembership"> | string
+    userId?: StringWithAggregatesFilter<"TeamMembership"> | string
+    teamId?: StringWithAggregatesFilter<"TeamMembership"> | string
+    role?: EnumTeamRoleWithAggregatesFilter<"TeamMembership"> | $Enums.TeamRole
+    joinedAt?: DateTimeWithAggregatesFilter<"TeamMembership"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     email: string
@@ -2085,6 +4793,8 @@ export namespace Prisma {
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
+    teams?: TeamMembershipCreateNestedManyWithoutUserInput
+    ownedTeams?: TeamCreateNestedManyWithoutOwnerInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -2095,6 +4805,8 @@ export namespace Prisma {
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
+    teams?: TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+    ownedTeams?: TeamUncheckedCreateNestedManyWithoutOwnerInput
   }
 
   export type UserUpdateInput = {
@@ -2105,6 +4817,8 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teams?: TeamMembershipUpdateManyWithoutUserNestedInput
+    ownedTeams?: TeamUpdateManyWithoutOwnerNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -2115,6 +4829,8 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teams?: TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+    ownedTeams?: TeamUncheckedUpdateManyWithoutOwnerNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -2145,6 +4861,126 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TeamCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    owner: UserCreateNestedOneWithoutOwnedTeamsInput
+    members?: TeamMembershipCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamUncheckedCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ownerId: string
+    members?: TeamMembershipUncheckedCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    owner?: UserUpdateOneRequiredWithoutOwnedTeamsNestedInput
+    members?: TeamMembershipUpdateManyWithoutTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ownerId?: StringFieldUpdateOperationsInput | string
+    members?: TeamMembershipUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
+  export type TeamCreateManyInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ownerId: string
+  }
+
+  export type TeamUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TeamUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ownerId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TeamMembershipCreateInput = {
+    id?: string
+    role?: $Enums.TeamRole
+    joinedAt?: Date | string
+    user: UserCreateNestedOneWithoutTeamsInput
+    team: TeamCreateNestedOneWithoutMembersInput
+  }
+
+  export type TeamMembershipUncheckedCreateInput = {
+    id?: string
+    userId: string
+    teamId: string
+    role?: $Enums.TeamRole
+    joinedAt?: Date | string
+  }
+
+  export type TeamMembershipUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTeamsNestedInput
+    team?: TeamUpdateOneRequiredWithoutMembersNestedInput
+  }
+
+  export type TeamMembershipUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    teamId?: StringFieldUpdateOperationsInput | string
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TeamMembershipCreateManyInput = {
+    id?: string
+    userId: string
+    teamId: string
+    role?: $Enums.TeamRole
+    joinedAt?: Date | string
+  }
+
+  export type TeamMembershipUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TeamMembershipUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    teamId?: StringFieldUpdateOperationsInput | string
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -2178,6 +5014,26 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type TeamMembershipListRelationFilter = {
+    every?: TeamMembershipWhereInput
+    some?: TeamMembershipWhereInput
+    none?: TeamMembershipWhereInput
+  }
+
+  export type TeamListRelationFilter = {
+    every?: TeamWhereInput
+    some?: TeamWhereInput
+    none?: TeamWhereInput
+  }
+
+  export type TeamMembershipOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TeamOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type UserCountOrderByAggregateInput = {
@@ -2252,6 +5108,155 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type UserScalarRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
+  export type TeamCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    ownerId?: SortOrder
+  }
+
+  export type TeamMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    ownerId?: SortOrder
+  }
+
+  export type TeamMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    ownerId?: SortOrder
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type EnumTeamRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.TeamRole | EnumTeamRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumTeamRoleFilter<$PrismaModel> | $Enums.TeamRole
+  }
+
+  export type TeamScalarRelationFilter = {
+    is?: TeamWhereInput
+    isNot?: TeamWhereInput
+  }
+
+  export type TeamMembershipUserIdTeamIdCompoundUniqueInput = {
+    userId: string
+    teamId: string
+  }
+
+  export type TeamMembershipCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    teamId?: SortOrder
+    role?: SortOrder
+    joinedAt?: SortOrder
+  }
+
+  export type TeamMembershipMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    teamId?: SortOrder
+    role?: SortOrder
+    joinedAt?: SortOrder
+  }
+
+  export type TeamMembershipMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    teamId?: SortOrder
+    role?: SortOrder
+    joinedAt?: SortOrder
+  }
+
+  export type EnumTeamRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TeamRole | EnumTeamRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumTeamRoleWithAggregatesFilter<$PrismaModel> | $Enums.TeamRole
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTeamRoleFilter<$PrismaModel>
+    _max?: NestedEnumTeamRoleFilter<$PrismaModel>
+  }
+
+  export type TeamMembershipCreateNestedManyWithoutUserInput = {
+    create?: XOR<TeamMembershipCreateWithoutUserInput, TeamMembershipUncheckedCreateWithoutUserInput> | TeamMembershipCreateWithoutUserInput[] | TeamMembershipUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TeamMembershipCreateOrConnectWithoutUserInput | TeamMembershipCreateOrConnectWithoutUserInput[]
+    createMany?: TeamMembershipCreateManyUserInputEnvelope
+    connect?: TeamMembershipWhereUniqueInput | TeamMembershipWhereUniqueInput[]
+  }
+
+  export type TeamCreateNestedManyWithoutOwnerInput = {
+    create?: XOR<TeamCreateWithoutOwnerInput, TeamUncheckedCreateWithoutOwnerInput> | TeamCreateWithoutOwnerInput[] | TeamUncheckedCreateWithoutOwnerInput[]
+    connectOrCreate?: TeamCreateOrConnectWithoutOwnerInput | TeamCreateOrConnectWithoutOwnerInput[]
+    createMany?: TeamCreateManyOwnerInputEnvelope
+    connect?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
+  }
+
+  export type TeamMembershipUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<TeamMembershipCreateWithoutUserInput, TeamMembershipUncheckedCreateWithoutUserInput> | TeamMembershipCreateWithoutUserInput[] | TeamMembershipUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TeamMembershipCreateOrConnectWithoutUserInput | TeamMembershipCreateOrConnectWithoutUserInput[]
+    createMany?: TeamMembershipCreateManyUserInputEnvelope
+    connect?: TeamMembershipWhereUniqueInput | TeamMembershipWhereUniqueInput[]
+  }
+
+  export type TeamUncheckedCreateNestedManyWithoutOwnerInput = {
+    create?: XOR<TeamCreateWithoutOwnerInput, TeamUncheckedCreateWithoutOwnerInput> | TeamCreateWithoutOwnerInput[] | TeamUncheckedCreateWithoutOwnerInput[]
+    connectOrCreate?: TeamCreateOrConnectWithoutOwnerInput | TeamCreateOrConnectWithoutOwnerInput[]
+    createMany?: TeamCreateManyOwnerInputEnvelope
+    connect?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -2262,6 +5267,154 @@ export namespace Prisma {
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type TeamMembershipUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TeamMembershipCreateWithoutUserInput, TeamMembershipUncheckedCreateWithoutUserInput> | TeamMembershipCreateWithoutUserInput[] | TeamMembershipUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TeamMembershipCreateOrConnectWithoutUserInput | TeamMembershipCreateOrConnectWithoutUserInput[]
+    upsert?: TeamMembershipUpsertWithWhereUniqueWithoutUserInput | TeamMembershipUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TeamMembershipCreateManyUserInputEnvelope
+    set?: TeamMembershipWhereUniqueInput | TeamMembershipWhereUniqueInput[]
+    disconnect?: TeamMembershipWhereUniqueInput | TeamMembershipWhereUniqueInput[]
+    delete?: TeamMembershipWhereUniqueInput | TeamMembershipWhereUniqueInput[]
+    connect?: TeamMembershipWhereUniqueInput | TeamMembershipWhereUniqueInput[]
+    update?: TeamMembershipUpdateWithWhereUniqueWithoutUserInput | TeamMembershipUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TeamMembershipUpdateManyWithWhereWithoutUserInput | TeamMembershipUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TeamMembershipScalarWhereInput | TeamMembershipScalarWhereInput[]
+  }
+
+  export type TeamUpdateManyWithoutOwnerNestedInput = {
+    create?: XOR<TeamCreateWithoutOwnerInput, TeamUncheckedCreateWithoutOwnerInput> | TeamCreateWithoutOwnerInput[] | TeamUncheckedCreateWithoutOwnerInput[]
+    connectOrCreate?: TeamCreateOrConnectWithoutOwnerInput | TeamCreateOrConnectWithoutOwnerInput[]
+    upsert?: TeamUpsertWithWhereUniqueWithoutOwnerInput | TeamUpsertWithWhereUniqueWithoutOwnerInput[]
+    createMany?: TeamCreateManyOwnerInputEnvelope
+    set?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
+    disconnect?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
+    delete?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
+    connect?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
+    update?: TeamUpdateWithWhereUniqueWithoutOwnerInput | TeamUpdateWithWhereUniqueWithoutOwnerInput[]
+    updateMany?: TeamUpdateManyWithWhereWithoutOwnerInput | TeamUpdateManyWithWhereWithoutOwnerInput[]
+    deleteMany?: TeamScalarWhereInput | TeamScalarWhereInput[]
+  }
+
+  export type TeamMembershipUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TeamMembershipCreateWithoutUserInput, TeamMembershipUncheckedCreateWithoutUserInput> | TeamMembershipCreateWithoutUserInput[] | TeamMembershipUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TeamMembershipCreateOrConnectWithoutUserInput | TeamMembershipCreateOrConnectWithoutUserInput[]
+    upsert?: TeamMembershipUpsertWithWhereUniqueWithoutUserInput | TeamMembershipUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TeamMembershipCreateManyUserInputEnvelope
+    set?: TeamMembershipWhereUniqueInput | TeamMembershipWhereUniqueInput[]
+    disconnect?: TeamMembershipWhereUniqueInput | TeamMembershipWhereUniqueInput[]
+    delete?: TeamMembershipWhereUniqueInput | TeamMembershipWhereUniqueInput[]
+    connect?: TeamMembershipWhereUniqueInput | TeamMembershipWhereUniqueInput[]
+    update?: TeamMembershipUpdateWithWhereUniqueWithoutUserInput | TeamMembershipUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TeamMembershipUpdateManyWithWhereWithoutUserInput | TeamMembershipUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TeamMembershipScalarWhereInput | TeamMembershipScalarWhereInput[]
+  }
+
+  export type TeamUncheckedUpdateManyWithoutOwnerNestedInput = {
+    create?: XOR<TeamCreateWithoutOwnerInput, TeamUncheckedCreateWithoutOwnerInput> | TeamCreateWithoutOwnerInput[] | TeamUncheckedCreateWithoutOwnerInput[]
+    connectOrCreate?: TeamCreateOrConnectWithoutOwnerInput | TeamCreateOrConnectWithoutOwnerInput[]
+    upsert?: TeamUpsertWithWhereUniqueWithoutOwnerInput | TeamUpsertWithWhereUniqueWithoutOwnerInput[]
+    createMany?: TeamCreateManyOwnerInputEnvelope
+    set?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
+    disconnect?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
+    delete?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
+    connect?: TeamWhereUniqueInput | TeamWhereUniqueInput[]
+    update?: TeamUpdateWithWhereUniqueWithoutOwnerInput | TeamUpdateWithWhereUniqueWithoutOwnerInput[]
+    updateMany?: TeamUpdateManyWithWhereWithoutOwnerInput | TeamUpdateManyWithWhereWithoutOwnerInput[]
+    deleteMany?: TeamScalarWhereInput | TeamScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutOwnedTeamsInput = {
+    create?: XOR<UserCreateWithoutOwnedTeamsInput, UserUncheckedCreateWithoutOwnedTeamsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutOwnedTeamsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type TeamMembershipCreateNestedManyWithoutTeamInput = {
+    create?: XOR<TeamMembershipCreateWithoutTeamInput, TeamMembershipUncheckedCreateWithoutTeamInput> | TeamMembershipCreateWithoutTeamInput[] | TeamMembershipUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: TeamMembershipCreateOrConnectWithoutTeamInput | TeamMembershipCreateOrConnectWithoutTeamInput[]
+    createMany?: TeamMembershipCreateManyTeamInputEnvelope
+    connect?: TeamMembershipWhereUniqueInput | TeamMembershipWhereUniqueInput[]
+  }
+
+  export type TeamMembershipUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<TeamMembershipCreateWithoutTeamInput, TeamMembershipUncheckedCreateWithoutTeamInput> | TeamMembershipCreateWithoutTeamInput[] | TeamMembershipUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: TeamMembershipCreateOrConnectWithoutTeamInput | TeamMembershipCreateOrConnectWithoutTeamInput[]
+    createMany?: TeamMembershipCreateManyTeamInputEnvelope
+    connect?: TeamMembershipWhereUniqueInput | TeamMembershipWhereUniqueInput[]
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
+  export type UserUpdateOneRequiredWithoutOwnedTeamsNestedInput = {
+    create?: XOR<UserCreateWithoutOwnedTeamsInput, UserUncheckedCreateWithoutOwnedTeamsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutOwnedTeamsInput
+    upsert?: UserUpsertWithoutOwnedTeamsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutOwnedTeamsInput, UserUpdateWithoutOwnedTeamsInput>, UserUncheckedUpdateWithoutOwnedTeamsInput>
+  }
+
+  export type TeamMembershipUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<TeamMembershipCreateWithoutTeamInput, TeamMembershipUncheckedCreateWithoutTeamInput> | TeamMembershipCreateWithoutTeamInput[] | TeamMembershipUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: TeamMembershipCreateOrConnectWithoutTeamInput | TeamMembershipCreateOrConnectWithoutTeamInput[]
+    upsert?: TeamMembershipUpsertWithWhereUniqueWithoutTeamInput | TeamMembershipUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: TeamMembershipCreateManyTeamInputEnvelope
+    set?: TeamMembershipWhereUniqueInput | TeamMembershipWhereUniqueInput[]
+    disconnect?: TeamMembershipWhereUniqueInput | TeamMembershipWhereUniqueInput[]
+    delete?: TeamMembershipWhereUniqueInput | TeamMembershipWhereUniqueInput[]
+    connect?: TeamMembershipWhereUniqueInput | TeamMembershipWhereUniqueInput[]
+    update?: TeamMembershipUpdateWithWhereUniqueWithoutTeamInput | TeamMembershipUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: TeamMembershipUpdateManyWithWhereWithoutTeamInput | TeamMembershipUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: TeamMembershipScalarWhereInput | TeamMembershipScalarWhereInput[]
+  }
+
+  export type TeamMembershipUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<TeamMembershipCreateWithoutTeamInput, TeamMembershipUncheckedCreateWithoutTeamInput> | TeamMembershipCreateWithoutTeamInput[] | TeamMembershipUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: TeamMembershipCreateOrConnectWithoutTeamInput | TeamMembershipCreateOrConnectWithoutTeamInput[]
+    upsert?: TeamMembershipUpsertWithWhereUniqueWithoutTeamInput | TeamMembershipUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: TeamMembershipCreateManyTeamInputEnvelope
+    set?: TeamMembershipWhereUniqueInput | TeamMembershipWhereUniqueInput[]
+    disconnect?: TeamMembershipWhereUniqueInput | TeamMembershipWhereUniqueInput[]
+    delete?: TeamMembershipWhereUniqueInput | TeamMembershipWhereUniqueInput[]
+    connect?: TeamMembershipWhereUniqueInput | TeamMembershipWhereUniqueInput[]
+    update?: TeamMembershipUpdateWithWhereUniqueWithoutTeamInput | TeamMembershipUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: TeamMembershipUpdateManyWithWhereWithoutTeamInput | TeamMembershipUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: TeamMembershipScalarWhereInput | TeamMembershipScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutTeamsInput = {
+    create?: XOR<UserCreateWithoutTeamsInput, UserUncheckedCreateWithoutTeamsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTeamsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type TeamCreateNestedOneWithoutMembersInput = {
+    create?: XOR<TeamCreateWithoutMembersInput, TeamUncheckedCreateWithoutMembersInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutMembersInput
+    connect?: TeamWhereUniqueInput
+  }
+
+  export type EnumTeamRoleFieldUpdateOperationsInput = {
+    set?: $Enums.TeamRole
+  }
+
+  export type UserUpdateOneRequiredWithoutTeamsNestedInput = {
+    create?: XOR<UserCreateWithoutTeamsInput, UserUncheckedCreateWithoutTeamsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTeamsInput
+    upsert?: UserUpsertWithoutTeamsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTeamsInput, UserUpdateWithoutTeamsInput>, UserUncheckedUpdateWithoutTeamsInput>
+  }
+
+  export type TeamUpdateOneRequiredWithoutMembersNestedInput = {
+    create?: XOR<TeamCreateWithoutMembersInput, TeamUncheckedCreateWithoutMembersInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutMembersInput
+    upsert?: TeamUpsertWithoutMembersInput
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutMembersInput, TeamUpdateWithoutMembersInput>, TeamUncheckedUpdateWithoutMembersInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -2346,6 +5499,474 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedEnumTeamRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.TeamRole | EnumTeamRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumTeamRoleFilter<$PrismaModel> | $Enums.TeamRole
+  }
+
+  export type NestedEnumTeamRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TeamRole | EnumTeamRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumTeamRoleWithAggregatesFilter<$PrismaModel> | $Enums.TeamRole
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTeamRoleFilter<$PrismaModel>
+    _max?: NestedEnumTeamRoleFilter<$PrismaModel>
+  }
+
+  export type TeamMembershipCreateWithoutUserInput = {
+    id?: string
+    role?: $Enums.TeamRole
+    joinedAt?: Date | string
+    team: TeamCreateNestedOneWithoutMembersInput
+  }
+
+  export type TeamMembershipUncheckedCreateWithoutUserInput = {
+    id?: string
+    teamId: string
+    role?: $Enums.TeamRole
+    joinedAt?: Date | string
+  }
+
+  export type TeamMembershipCreateOrConnectWithoutUserInput = {
+    where: TeamMembershipWhereUniqueInput
+    create: XOR<TeamMembershipCreateWithoutUserInput, TeamMembershipUncheckedCreateWithoutUserInput>
+  }
+
+  export type TeamMembershipCreateManyUserInputEnvelope = {
+    data: TeamMembershipCreateManyUserInput | TeamMembershipCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TeamCreateWithoutOwnerInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: TeamMembershipCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamUncheckedCreateWithoutOwnerInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: TeamMembershipUncheckedCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamCreateOrConnectWithoutOwnerInput = {
+    where: TeamWhereUniqueInput
+    create: XOR<TeamCreateWithoutOwnerInput, TeamUncheckedCreateWithoutOwnerInput>
+  }
+
+  export type TeamCreateManyOwnerInputEnvelope = {
+    data: TeamCreateManyOwnerInput | TeamCreateManyOwnerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TeamMembershipUpsertWithWhereUniqueWithoutUserInput = {
+    where: TeamMembershipWhereUniqueInput
+    update: XOR<TeamMembershipUpdateWithoutUserInput, TeamMembershipUncheckedUpdateWithoutUserInput>
+    create: XOR<TeamMembershipCreateWithoutUserInput, TeamMembershipUncheckedCreateWithoutUserInput>
+  }
+
+  export type TeamMembershipUpdateWithWhereUniqueWithoutUserInput = {
+    where: TeamMembershipWhereUniqueInput
+    data: XOR<TeamMembershipUpdateWithoutUserInput, TeamMembershipUncheckedUpdateWithoutUserInput>
+  }
+
+  export type TeamMembershipUpdateManyWithWhereWithoutUserInput = {
+    where: TeamMembershipScalarWhereInput
+    data: XOR<TeamMembershipUpdateManyMutationInput, TeamMembershipUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type TeamMembershipScalarWhereInput = {
+    AND?: TeamMembershipScalarWhereInput | TeamMembershipScalarWhereInput[]
+    OR?: TeamMembershipScalarWhereInput[]
+    NOT?: TeamMembershipScalarWhereInput | TeamMembershipScalarWhereInput[]
+    id?: StringFilter<"TeamMembership"> | string
+    userId?: StringFilter<"TeamMembership"> | string
+    teamId?: StringFilter<"TeamMembership"> | string
+    role?: EnumTeamRoleFilter<"TeamMembership"> | $Enums.TeamRole
+    joinedAt?: DateTimeFilter<"TeamMembership"> | Date | string
+  }
+
+  export type TeamUpsertWithWhereUniqueWithoutOwnerInput = {
+    where: TeamWhereUniqueInput
+    update: XOR<TeamUpdateWithoutOwnerInput, TeamUncheckedUpdateWithoutOwnerInput>
+    create: XOR<TeamCreateWithoutOwnerInput, TeamUncheckedCreateWithoutOwnerInput>
+  }
+
+  export type TeamUpdateWithWhereUniqueWithoutOwnerInput = {
+    where: TeamWhereUniqueInput
+    data: XOR<TeamUpdateWithoutOwnerInput, TeamUncheckedUpdateWithoutOwnerInput>
+  }
+
+  export type TeamUpdateManyWithWhereWithoutOwnerInput = {
+    where: TeamScalarWhereInput
+    data: XOR<TeamUpdateManyMutationInput, TeamUncheckedUpdateManyWithoutOwnerInput>
+  }
+
+  export type TeamScalarWhereInput = {
+    AND?: TeamScalarWhereInput | TeamScalarWhereInput[]
+    OR?: TeamScalarWhereInput[]
+    NOT?: TeamScalarWhereInput | TeamScalarWhereInput[]
+    id?: StringFilter<"Team"> | string
+    name?: StringFilter<"Team"> | string
+    description?: StringNullableFilter<"Team"> | string | null
+    createdAt?: DateTimeFilter<"Team"> | Date | string
+    updatedAt?: DateTimeFilter<"Team"> | Date | string
+    ownerId?: StringFilter<"Team"> | string
+  }
+
+  export type UserCreateWithoutOwnedTeamsInput = {
+    id?: string
+    email: string
+    password: string
+    name: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teams?: TeamMembershipCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutOwnedTeamsInput = {
+    id?: string
+    email: string
+    password: string
+    name: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teams?: TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutOwnedTeamsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutOwnedTeamsInput, UserUncheckedCreateWithoutOwnedTeamsInput>
+  }
+
+  export type TeamMembershipCreateWithoutTeamInput = {
+    id?: string
+    role?: $Enums.TeamRole
+    joinedAt?: Date | string
+    user: UserCreateNestedOneWithoutTeamsInput
+  }
+
+  export type TeamMembershipUncheckedCreateWithoutTeamInput = {
+    id?: string
+    userId: string
+    role?: $Enums.TeamRole
+    joinedAt?: Date | string
+  }
+
+  export type TeamMembershipCreateOrConnectWithoutTeamInput = {
+    where: TeamMembershipWhereUniqueInput
+    create: XOR<TeamMembershipCreateWithoutTeamInput, TeamMembershipUncheckedCreateWithoutTeamInput>
+  }
+
+  export type TeamMembershipCreateManyTeamInputEnvelope = {
+    data: TeamMembershipCreateManyTeamInput | TeamMembershipCreateManyTeamInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutOwnedTeamsInput = {
+    update: XOR<UserUpdateWithoutOwnedTeamsInput, UserUncheckedUpdateWithoutOwnedTeamsInput>
+    create: XOR<UserCreateWithoutOwnedTeamsInput, UserUncheckedCreateWithoutOwnedTeamsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutOwnedTeamsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutOwnedTeamsInput, UserUncheckedUpdateWithoutOwnedTeamsInput>
+  }
+
+  export type UserUpdateWithoutOwnedTeamsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teams?: TeamMembershipUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutOwnedTeamsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teams?: TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type TeamMembershipUpsertWithWhereUniqueWithoutTeamInput = {
+    where: TeamMembershipWhereUniqueInput
+    update: XOR<TeamMembershipUpdateWithoutTeamInput, TeamMembershipUncheckedUpdateWithoutTeamInput>
+    create: XOR<TeamMembershipCreateWithoutTeamInput, TeamMembershipUncheckedCreateWithoutTeamInput>
+  }
+
+  export type TeamMembershipUpdateWithWhereUniqueWithoutTeamInput = {
+    where: TeamMembershipWhereUniqueInput
+    data: XOR<TeamMembershipUpdateWithoutTeamInput, TeamMembershipUncheckedUpdateWithoutTeamInput>
+  }
+
+  export type TeamMembershipUpdateManyWithWhereWithoutTeamInput = {
+    where: TeamMembershipScalarWhereInput
+    data: XOR<TeamMembershipUpdateManyMutationInput, TeamMembershipUncheckedUpdateManyWithoutTeamInput>
+  }
+
+  export type UserCreateWithoutTeamsInput = {
+    id?: string
+    email: string
+    password: string
+    name: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ownedTeams?: TeamCreateNestedManyWithoutOwnerInput
+  }
+
+  export type UserUncheckedCreateWithoutTeamsInput = {
+    id?: string
+    email: string
+    password: string
+    name: string
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ownedTeams?: TeamUncheckedCreateNestedManyWithoutOwnerInput
+  }
+
+  export type UserCreateOrConnectWithoutTeamsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTeamsInput, UserUncheckedCreateWithoutTeamsInput>
+  }
+
+  export type TeamCreateWithoutMembersInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    owner: UserCreateNestedOneWithoutOwnedTeamsInput
+  }
+
+  export type TeamUncheckedCreateWithoutMembersInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ownerId: string
+  }
+
+  export type TeamCreateOrConnectWithoutMembersInput = {
+    where: TeamWhereUniqueInput
+    create: XOR<TeamCreateWithoutMembersInput, TeamUncheckedCreateWithoutMembersInput>
+  }
+
+  export type UserUpsertWithoutTeamsInput = {
+    update: XOR<UserUpdateWithoutTeamsInput, UserUncheckedUpdateWithoutTeamsInput>
+    create: XOR<UserCreateWithoutTeamsInput, UserUncheckedCreateWithoutTeamsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTeamsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTeamsInput, UserUncheckedUpdateWithoutTeamsInput>
+  }
+
+  export type UserUpdateWithoutTeamsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ownedTeams?: TeamUpdateManyWithoutOwnerNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTeamsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ownedTeams?: TeamUncheckedUpdateManyWithoutOwnerNestedInput
+  }
+
+  export type TeamUpsertWithoutMembersInput = {
+    update: XOR<TeamUpdateWithoutMembersInput, TeamUncheckedUpdateWithoutMembersInput>
+    create: XOR<TeamCreateWithoutMembersInput, TeamUncheckedCreateWithoutMembersInput>
+    where?: TeamWhereInput
+  }
+
+  export type TeamUpdateToOneWithWhereWithoutMembersInput = {
+    where?: TeamWhereInput
+    data: XOR<TeamUpdateWithoutMembersInput, TeamUncheckedUpdateWithoutMembersInput>
+  }
+
+  export type TeamUpdateWithoutMembersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    owner?: UserUpdateOneRequiredWithoutOwnedTeamsNestedInput
+  }
+
+  export type TeamUncheckedUpdateWithoutMembersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ownerId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TeamMembershipCreateManyUserInput = {
+    id?: string
+    teamId: string
+    role?: $Enums.TeamRole
+    joinedAt?: Date | string
+  }
+
+  export type TeamCreateManyOwnerInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TeamMembershipUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: TeamUpdateOneRequiredWithoutMembersNestedInput
+  }
+
+  export type TeamMembershipUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: StringFieldUpdateOperationsInput | string
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TeamMembershipUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: StringFieldUpdateOperationsInput | string
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TeamUpdateWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: TeamMembershipUpdateManyWithoutTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: TeamMembershipUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateManyWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TeamMembershipCreateManyTeamInput = {
+    id?: string
+    userId: string
+    role?: $Enums.TeamRole
+    joinedAt?: Date | string
+  }
+
+  export type TeamMembershipUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTeamsNestedInput
+  }
+
+  export type TeamMembershipUncheckedUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TeamMembershipUncheckedUpdateManyWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 
