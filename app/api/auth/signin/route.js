@@ -1,9 +1,10 @@
 import { signIn } from "@/auth";
+import { withRateLimit } from "@/lib/withRateLimit";
 import { loginSchema } from "@/utils/zod";
 import { AuthError } from "next-auth";
 import { NextResponse } from "next/server";
 
-export async function POST(request) {
+async function handler(request) {
   const body = await request.json();
   const result = loginSchema.safeParse(body); // Validate the request body against the login schema
 
@@ -59,3 +60,5 @@ export async function POST(request) {
     throw error;
   }
 }
+
+export const POST = withRateLimit(handler, "auth");
