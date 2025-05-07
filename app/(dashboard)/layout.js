@@ -1,4 +1,4 @@
-import { auth, signOut } from "@/auth";
+import { signOut } from "@/auth";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import {
   Breadcrumb,
