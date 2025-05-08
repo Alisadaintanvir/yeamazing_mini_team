@@ -36,6 +36,7 @@ export const teamSchema = z.object({
 // Schema for adding members to a team
 export const addTeamMemberSchema = z.object({
   email: z.string().email("Invalid email address"),
+  team: z.string().nonempty("Team is required"),
   role: z.enum(["ADMIN", "MEMBER"], {
     errorMap: () => ({ message: "Role must be either ADMIN or MEMBER" }),
   }),

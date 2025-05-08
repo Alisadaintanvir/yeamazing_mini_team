@@ -51,7 +51,7 @@ model TeamMembership {
   id       String   @id @default(uuid())
   userId   String
   teamId   String
-  role     TeamRole @default(MEMBER)
+  role     TeamRole @default(ADMIN)
   joinedAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id])
@@ -61,7 +61,7 @@ model TeamMembership {
 }
 
 enum TeamRole {
-  OWNER
   ADMIN
+  MANAGER
   MEMBER
 }

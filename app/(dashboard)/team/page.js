@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TeamStats from "@/components/team/TeamStats";
 import MemberTable from "@/components/team/MemberTable";
 import TeamSelection from "@/components/team/TeamSelection";
 import CreateTeamModal from "@/components/team/CreateTeamModal";
+import AddTeamMemberModal from "@/components/team/AddTeamMemberModal";
+import { SessionProvider } from "next-auth/react";
 
 const TeamDashboard = () => {
   // Sample data structure
@@ -43,6 +45,20 @@ const TeamDashboard = () => {
       ],
     },
   ]);
+
+  // Fetch teams when component mounts
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        const res = await fetch("/api/team");
+        const data = await res.json();
+        console.log("data", data);
+      } catch (err) {
+        console.error("Failed to fetch teams:", err);
+      }
+    };
+    fetchTeams();
+  }, []);
 
   const [selectedTeam, setSelectedTeam] = useState(teams[0].id);
   const [searchTerm, setSearchTerm] = useState("");
@@ -90,47 +106,61 @@ const TeamDashboard = () => {
     );
   };
 
-  const handleCreateTeam = (teamName) => {
+  const handleCreateTeam = async (data) => {
     const newTeam = {
       id: `team-${teams.length + 1}`,
-      name: teamName,
+      name: data.name,
       members: [],
     };
     setTeams([...teams, newTeam]);
     setSelectedTeam(newTeam.id);
+
+    const { name, description } = data;
   };
 
   return (
-    <div className="space-y-6">
-      {/* Team Selection */}
-      <TeamSelection
-        teams={teams}
-        searchTerm={searchTerm}
-        currentTeam={currentTeam}
-        setSelectedTeam={setSelectedTeam}
-        selectedTeam={selectedTeam}
-        onOpenCreateTeamModal={() => setIsCreateTeamModalOpen(true)}
-      />
+    <SessionProvider>
+      <div className="space-y-6">
+        {/* Team Selection */}
+        <TeamSelection
+          teams={teams}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          currentTeam={currentTeam}
+          setSelectedTeam={setSelectedTeam}
+          selectedTeam={selectedTeam}
+          onOpenCreateTeamModal={() => setIsCreateTeamModalOpen(true)}
+          onOpenAddMemberModal={() => setIsAddingMember(true)}
+        />
 
-      {/* Members Table */}
-      <MemberTable
-        filteredMembers={filteredMembers}
-        roles={roles}
-        searchTerm={searchTerm}
-        updateMemberRole={updateMemberRole}
-        deleteMember={deleteMember}
-      />
+        {/* Members Table */}
+        <MemberTable
+          filteredMembers={filteredMembers}
+          roles={roles}
+          searchTerm={searchTerm}
+          updateMemberRole={updateMemberRole}
+          deleteMember={deleteMember}
+        />
 
-      {/* Team Stats */}
-      <TeamStats currentTeam={currentTeam} roles={roles} />
+        {/* Team Stats */}
+        <TeamStats currentTeam={currentTeam} roles={roles} />
 
-      {/* Create Team Modal */}
-      <CreateTeamModal
-        open={isCreateTeamModalOpen}
-        onOpenChange={setIsCreateTeamModalOpen}
-        onCreateTeam={handleCreateTeam}
-      />
-    </div>
+        {/* Create Team Modal */}
+        <CreateTeamModal
+          open={isCreateTeamModalOpen}
+          onOpenChange={setIsCreateTeamModalOpen}
+          onCreateTeam={handleCreateTeam}
+        />
+
+        {/* Add Team Member Modal */}
+        <AddTeamMemberModal
+          open={isAddingMember}
+          onOpenChange={setIsAddingMember}
+          onCreateTeam={handleCreateTeam}
+          currentTeam={currentTeam.id}
+        />
+      </div>
+    </SessionProvider>
   );
 };
 

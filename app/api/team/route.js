@@ -3,7 +3,21 @@ import { teamSchema } from "@/utils/zod";
 import { withAuth } from "@/lib/with-auth";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
-async function handler(request) {
+import { withRateLimit } from "@/lib/withRateLimit";
+
+async function getTeams() {
+  const session = await auth();
+  try {
+    const teams = await prisma.team.findMany({
+      where: {},
+    });
+    return NextResponse.json({ success: true, data: teams });
+  } catch (error) {
+    return NextResponse.json({ success: false, error });
+  }
+}
+
+async function addTeam(request) {
   const session = await auth();
   const body = await request.json();
   const result = teamSchema.safeParse(body);
@@ -19,13 +33,13 @@ async function handler(request) {
 
   try {
     // Check if team with same name exists in same user account
-    const existingTeam = await prisma.team.findUnique({
-      where: { name, ownerId: session.user.id },
+    const existingTeam = await prisma.team.findFirst({
+      where: { name: name, ownerId: session.user.id },
     });
 
     if (existingTeam) {
       return NextResponse.json(
-        { success: false, message: "Team already exists" },
+        { success: false, error: "Team already exists" },
         { status: 400 }
       );
     }
@@ -36,6 +50,15 @@ async function handler(request) {
         name,
         description,
         ownerId: session.user.id,
+        members: {
+          create: {
+            userId: session.user.id,
+            role: "ADMIN",
+          },
+        },
+      },
+      include: {
+        members: true,
       },
     });
 
@@ -58,4 +81,5 @@ async function handler(request) {
 }
 
 // Wrap the handler with withAuth
-export const POST = withAuth(handler);
+export const GET = withRateLimit(withAuth(getTeams));
+export const POST = withRateLimit(withAuth(addTeam));

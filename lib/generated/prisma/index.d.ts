@@ -43,8 +43,8 @@ export type Role = (typeof Role)[keyof typeof Role]
 
 
 export const TeamRole: {
-  OWNER: 'OWNER',
   ADMIN: 'ADMIN',
+  MANAGER: 'MANAGER',
   MEMBER: 'MEMBER'
 };
 

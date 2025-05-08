@@ -13,14 +13,16 @@ function TeamSelection({
   currentTeam,
   teams,
   searchTerm,
+  setSearchTerm,
   setSelectedTeam,
   selectedTeam,
   onOpenCreateTeamModal,
+  onOpenAddMemberModal,
 }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleCreateTeamClick = () => {
-    setDropdownOpen(false); // Close the dropdown first
+    setDropdownOpen(true); // Close the dropdown first
     setTimeout(() => {
       onOpenCreateTeamModal(); // Then open the modal
     }, 0);
@@ -71,7 +73,7 @@ function TeamSelection({
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Button className="gap-2">
+        <Button className="gap-2" onClick={onOpenAddMemberModal}>
           <Plus className="h-4 w-4" />
           Add Member
         </Button>

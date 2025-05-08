@@ -18,28 +18,34 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { teamSchema } from "@/utils/zod";
-import { Textarea } from "../ui/textarea";
+import { addTeamMemberSchema } from "@/utils/zod";
 import { toast } from "react-toastify";
 
-function CreateTeamModal({ open, onOpenChange, onCreateTeam }) {
+function AddTeamMemberModal({ open, onOpenChange, onCreateTeam, currentTeam }) {
   const form = useForm({
-    resolver: zodResolver(teamSchema),
+    resolver: zodResolver(addTeamMemberSchema),
     defaultValues: {
-      name: "",
-      description: "",
+      email: "",
+      role: "MEMBER",
     },
   });
 
-  const [teamName, setTeamName] = useState("");
-
-  const handleSubmit = async (data) => {
-    onCreateTeam(data);
-
+  const handleSubmit = async (formData) => {
+    const data = {
+      ...formData,
+      teamId: currentTeam,
+    };
     try {
-      const res = await fetch("/api/team", {
+      const res = await fetch("/api/team/member", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,7 +71,7 @@ function CreateTeamModal({ open, onOpenChange, onCreateTeam }) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create New Team</DialogTitle>
+          <DialogTitle>Add New Member</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -75,10 +81,10 @@ function CreateTeamModal({ open, onOpenChange, onCreateTeam }) {
           >
             <FormField
               control={form.control}
-              name="name"
+              name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Team Name *</FormLabel>
+                  <FormLabel>Email Address</FormLabel>
                   <FormControl>
                     <Input placeholder="Marketing Team" {...field} autoFocus />
                   </FormControl>
@@ -89,18 +95,25 @@ function CreateTeamModal({ open, onOpenChange, onCreateTeam }) {
 
             <FormField
               control={form.control}
-              name="description"
+              name="role"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="What's this team about?"
-                      className="resize-none"
-                      rows={4}
-                      {...field}
-                    />
-                  </FormControl>
+                  <FormLabel>Role</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a role" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="ADMIN">Admin</SelectItem>
+                      <SelectItem value="MANAGER">Owner</SelectItem>
+                      <SelectItem value="MEMBER">Member</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -108,7 +121,7 @@ function CreateTeamModal({ open, onOpenChange, onCreateTeam }) {
 
             <DialogFooter>
               <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? "Creating..." : "Create"}
+                {form.formState.isSubmitting ? "Adding..." : "Add"}
               </Button>
             </DialogFooter>
           </form>
@@ -118,4 +131,4 @@ function CreateTeamModal({ open, onOpenChange, onCreateTeam }) {
   );
 }
 
-export default CreateTeamModal;
+export default AddTeamMemberModal;
