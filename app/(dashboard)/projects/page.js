@@ -10,6 +10,7 @@ import {
   Check,
   Circle,
   Flag,
+  Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,6 +34,18 @@ import { Progress } from "@/components/ui/progress";
 import { CreateProjectDialog } from "@/components/project/CreateProjectDialog";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
+import DashboardLoading from "../loading";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const statuses = [
   { value: "backlog", label: "Backlog", icon: Circle, color: "bg-gray-400" },
@@ -83,22 +96,93 @@ export default function ProjectPage() {
     project.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const updateStatus = (projectId, newStatus) => {
-    setProjects(
-      projects.map((project) =>
-        project.id === projectId ? { ...project, status: newStatus } : project
-      )
-    );
+  const updateStatus = async (projectId, newStatus) => {
+    try {
+      const response = await fetch("/api/project", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: projectId,
+          status: newStatus,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.message || "Failed to update project status");
+      }
+
+      // Update local state
+      setProjects(
+        projects.map((project) =>
+          project.id === projectId ? { ...project, status: newStatus } : project
+        )
+      );
+
+      toast.success("Project status updated successfully");
+    } catch (error) {
+      console.error("Error updating project status:", error);
+      toast.error(error.message || "Failed to update project status");
+    }
   };
 
-  const updatePriority = (projectId, newPriority) => {
-    setProjects(
-      projects.map((project) =>
-        project.id === projectId
-          ? { ...project, priority: newPriority }
-          : project
-      )
-    );
+  const updatePriority = async (projectId, newPriority) => {
+    try {
+      const response = await fetch("/api/project", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: projectId,
+          priority: newPriority,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.message || "Failed to update project priority");
+      }
+
+      // Update local state
+      setProjects(
+        projects.map((project) =>
+          project.id === projectId
+            ? { ...project, priority: newPriority }
+            : project
+        )
+      );
+
+      toast.success("Project priority updated successfully");
+    } catch (error) {
+      console.error("Error updating project priority:", error);
+      toast.error(error.message || "Failed to update project priority");
+    }
+  };
+
+  const deleteProject = async (projectId) => {
+    try {
+      const response = await fetch(`/api/project?id=${projectId}`, {
+        method: "DELETE",
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.message || "Failed to delete project");
+      }
+
+      // Update local state
+      setProjects(projects.filter((project) => project.id !== projectId));
+      toast.success("Project deleted successfully");
+    } catch (error) {
+      console.error("Error deleting project:", error);
+      toast.error(error.message || "Failed to delete project");
+    }
   };
 
   const getStatus = (statusValue) =>
@@ -116,8 +200,145 @@ export default function ProjectPage() {
     setProjects([...projects, projectWithDefaults]);
   };
 
+  const canModifyProject = (userRole) => {
+    return userRole === "ADMIN" || userRole === "MANAGER";
+  };
+
+  const renderStatusCell = (project) => {
+    const status = getStatus(project.status);
+    const StatusIcon = status.icon;
+
+    if (!canModifyProject(session?.user?.role)) {
+      return (
+        <TableCell>
+          <div className="flex items-center gap-2 px-2">
+            <StatusIcon className={`h-3 w-3 ${status.color}`} />
+            {status.label}
+          </div>
+        </TableCell>
+      );
+    }
+
+    return (
+      <TableCell>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="gap-2 px-2">
+              <StatusIcon className={`h-3 w-3 ${status.color}`} />
+              {status.label}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            {statuses.map((s) => (
+              <DropdownMenuItem
+                key={s.value}
+                onClick={() => updateStatus(project.id, s.value)}
+                className="gap-2"
+              >
+                <s.icon className={`h-3 w-3 ${s.color}`} />
+                {s.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </TableCell>
+    );
+  };
+
+  const renderPriorityCell = (project) => {
+    const priority = getPriority(project.priority);
+
+    if (!canModifyProject(session?.user?.role)) {
+      return (
+        <TableCell>
+          <div className="flex items-center gap-2 px-2">
+            <span className={`h-3 w-3 rounded-full ${priority.color}`} />
+            {priority.label}
+          </div>
+        </TableCell>
+      );
+    }
+
+    return (
+      <TableCell>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="gap-2 px-2">
+              <span className={`h-3 w-3 rounded-full ${priority.color}`} />
+              {priority.label}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            {priorities.map((p) => (
+              <DropdownMenuItem
+                key={p.value}
+                onClick={() => updatePriority(project.id, p.value)}
+                className="gap-2"
+              >
+                <span className={`h-3 w-3 rounded-full ${p.color}`} />
+                {p.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </TableCell>
+    );
+  };
+
+  const renderDeleteButton = (project) => {
+    const isAdmin = session?.user?.role === "ADMIN";
+
+    return (
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`h-8 w-8 p-0 ${
+              isAdmin
+                ? "text-red-600 hover:text-red-700 hover:bg-red-50"
+                : "text-gray-400 cursor-not-allowed"
+            }`}
+            disabled={!isAdmin}
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {isAdmin ? (
+                <>
+                  This action cannot be undone. This will permanently delete the
+                  project "{project.name}" and all its associated data.
+                </>
+              ) : (
+                "You don't have permission to delete projects. Please contact an administrator."
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteProject(project.id)}
+              className={`${
+                isAdmin
+                  ? "bg-red-600 hover:bg-red-700"
+                  : "bg-gray-400 cursor-not-allowed"
+              }`}
+              disabled={!isAdmin}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    );
+  };
+
   if (loading) {
-    return <div>Loading projects...</div>;
+    return <DashboardLoading />;
   }
 
   return (
@@ -154,109 +375,53 @@ export default function ProjectPage() {
                 <TableHead>Progress</TableHead>
                 <TableHead>Due Date</TableHead>
                 <TableHead className="text-right">Team</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredProjects.map((project) => {
-                const status = getStatus(project.status);
-                const priority = getPriority(project.priority);
-                const StatusIcon = status.icon;
-
-                return (
-                  <TableRow key={project.id} className="hover:bg-gray-50">
-                    <TableCell className="font-medium">
+              {filteredProjects.map((project) => (
+                <TableRow key={project.id} className="hover:bg-gray-50">
+                  <TableCell className="font-medium">
+                    <div className="flex items-center gap-2">
                       {project.name}
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="gap-2 px-2"
+                    </div>
+                  </TableCell>
+                  {renderStatusCell(project)}
+                  {renderPriorityCell(project)}
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Progress value={project.progress} className="h-2" />
+                      <span className="text-sm text-muted-foreground">
+                        {project.progress}%
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {new Date(project.dueDate).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end">
+                      {project.team ? (
+                        project.team.map((member, i) => (
+                          <div
+                            key={i}
+                            className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs -ml-1 border border-white"
                           >
-                            <StatusIcon className={`h-3 w-3 ${status.color}`} />
-                            {status.label}
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start">
-                          {statuses.map((s) => (
-                            <DropdownMenuItem
-                              key={s.value}
-                              onClick={() => updateStatus(project.id, s.value)}
-                              className="gap-2"
-                            >
-                              <s.icon className={`h-3 w-3 ${s.color}`} />
-                              {s.label}
-                            </DropdownMenuItem>
-                          ))}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="gap-2 px-2"
-                          >
-                            <span
-                              className={`h-3 w-3 rounded-full ${priority.color}`}
-                            />
-                            {priority.label}
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start">
-                          {priorities.map((p) => (
-                            <DropdownMenuItem
-                              key={p.value}
-                              onClick={() =>
-                                updatePriority(project.id, p.value)
-                              }
-                              className="gap-2"
-                            >
-                              <span
-                                className={`h-3 w-3 rounded-full ${p.color}`}
-                              />
-                              {p.label}
-                            </DropdownMenuItem>
-                          ))}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Progress value={project.progress} className="h-2" />
-                        <span className="text-sm text-muted-foreground">
-                          {project.progress}%
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {new Date(project.dueDate).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end">
-                        {project.team ? (
-                          project.team.map((member, i) => (
-                            <div
-                              key={i}
-                              className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs -ml-1 border border-white"
-                            >
-                              {member.charAt(0)}
-                            </div>
-                          ))
-                        ) : (
-                          <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs -ml-1 border border-white">
-                            -
+                            {member.charAt(0)}
                           </div>
-                        )}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                        ))
+                      ) : (
+                        <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs -ml-1 border border-white">
+                          -
+                        </div>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {renderDeleteButton(project)}
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </CardContent>
