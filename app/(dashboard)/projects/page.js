@@ -311,7 +311,8 @@ export default function ProjectPage() {
               {isAdmin ? (
                 <>
                   This action cannot be undone. This will permanently delete the
-                  project "{project.name}" and all its associated data.
+                  project &apos;{project.name}&apos; and all its associated
+                  data.
                 </>
               ) : (
                 "You don't have permission to delete projects. Please contact an administrator."
