@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Plus,
   Search,
@@ -30,6 +30,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { CreateProjectDialog } from "@/components/project/CreateProjectDialog";
+import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
 
 const statuses = [
   { value: "backlog", label: "Backlog", icon: Circle, color: "bg-gray-400" },
@@ -52,35 +55,29 @@ const priorities = [
 
 export default function ProjectPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [projects, setProjects] = useState([
-    {
-      id: "proj-1",
-      name: "Website Redesign",
-      status: "in-progress",
-      priority: "high",
-      progress: 65,
-      dueDate: "2023-06-15",
-      team: ["Alex", "Sarah"],
-    },
-    {
-      id: "proj-2",
-      name: "Mobile App Launch",
-      status: "todo",
-      priority: "medium",
-      progress: 0,
-      dueDate: "2023-07-01",
-      team: ["Michael", "Emily"],
-    },
-    {
-      id: "proj-3",
-      name: "API Integration",
-      status: "done",
-      priority: "low",
-      progress: 100,
-      dueDate: "2023-05-10",
-      team: ["David"],
-    },
-  ]);
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch("/api/project");
+        const data = await response.json();
+        console.log("data", data);
+        if (data.success) {
+          setProjects(data.projects);
+        }
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+        toast.error("Failed to load projects");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   const filteredProjects = projects.filter((project) =>
     project.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -110,6 +107,19 @@ export default function ProjectPage() {
   const getPriority = (priorityValue) =>
     priorities.find((p) => p.value === priorityValue) || priorities[0];
 
+  const handleProjectCreated = (newProject) => {
+    const projectWithDefaults = {
+      ...newProject,
+      progress: newProject.progress || 0,
+      team: newProject.team || [],
+    };
+    setProjects([...projects, projectWithDefaults]);
+  };
+
+  if (loading) {
+    return <div>Loading projects...</div>;
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row justify-between gap-4">
@@ -124,10 +134,9 @@ export default function ProjectPage() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            New Project
-          </Button>
+          {session?.user?.role === "ADMIN" && (
+            <CreateProjectDialog onProjectCreated={handleProjectCreated} />
+          )}
         </div>
       </div>
 
@@ -229,14 +238,20 @@ export default function ProjectPage() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end">
-                        {project.team.map((member, i) => (
-                          <div
-                            key={i}
-                            className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs -ml-1 border border-white"
-                          >
-                            {member.charAt(0)}
+                        {project.team ? (
+                          project.team.map((member, i) => (
+                            <div
+                              key={i}
+                              className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs -ml-1 border border-white"
+                            >
+                              {member.charAt(0)}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs -ml-1 border border-white">
+                            -
                           </div>
-                        ))}
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>

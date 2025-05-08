@@ -45,7 +45,8 @@ model Team {
   ownerId String
   owner   User   @relation("TeamOwner", fields: [ownerId], references: [id])
 
-  members TeamMembership[]
+  members  TeamMembership[]
+  projects Project[]
 }
 
 model TeamMembership {
@@ -65,4 +66,19 @@ enum TeamRole {
   ADMIN
   MANAGER
   MEMBER
+}
+
+model Project {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  status      String    @default("todo")
+  priority    String    @default("medium")
+  progress    Int       @default(0)
+  dueDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  teamId String?
+  team   Team?   @relation(fields: [teamId], references: [id])
 }
