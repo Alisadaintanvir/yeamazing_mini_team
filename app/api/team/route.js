@@ -4,6 +4,8 @@ import { withAuth } from "@/lib/with-auth";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { withRateLimit } from "@/lib/withRateLimit";
+import { withMiddleware } from "@/lib/withMiddleware";
+import { PERMISSIONS } from "@/lib/permissions";
 
 async function getTeams() {
   const session = await auth();
@@ -11,9 +13,9 @@ async function getTeams() {
     const teams = await prisma.team.findMany({
       where: {},
     });
-    return NextResponse.json({ success: true, data: teams });
+    return NextResponse.json({ success: true, data: teams }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ success: false, error });
+    return NextResponse.json({ success: false, error }, { status: 500 });
   }
 }
 
@@ -62,11 +64,16 @@ async function addTeam(request) {
       },
     });
 
-    return NextResponse.json({
-      success: true,
-      message: "Team created successfully",
-      team,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Team created successfully",
+        team,
+      },
+      {
+        status: 201,
+      }
+    );
   } catch (error) {
     console.error("Error creating team:", error);
     return NextResponse.json(
@@ -81,5 +88,13 @@ async function addTeam(request) {
 }
 
 // Wrap the handler with withAuth
-export const GET = withRateLimit(withAuth(getTeams));
-export const POST = withRateLimit(withAuth(addTeam));
+export const GET = withMiddleware(getTeams, {
+  requireAuth: true,
+  rateLimit: true,
+  requiredPermissions: [PERMISSIONS.TEAM.READ],
+});
+export const POST = withMiddleware(addTeam, {
+  requireAuth: true,
+  rateLimit: true,
+  requiredPermissions: [PERMISSIONS.TEAM.CREATE],
+});

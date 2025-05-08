@@ -33,8 +33,6 @@ function CreateTeamModal({ open, onOpenChange, onCreateTeam }) {
     },
   });
 
-  const [teamName, setTeamName] = useState("");
-
   const handleSubmit = async (data) => {
     onCreateTeam(data);
 

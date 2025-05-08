@@ -11,7 +11,6 @@ const providers = [
     },
     authorize: async (credentials) => {
       try {
-        let user = null;
         const { email, password } = credentials;
 
         const existingUser = await prisma.user.findUnique({
@@ -28,17 +27,12 @@ const providers = [
         );
 
         if (!isPasswordValid) {
-          console.log("Invalid password");
           return null;
         }
 
-        user = existingUser;
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-        };
+        // Return user without password
+        const { password: _, ...userWithoutPassword } = existingUser;
+        return userWithoutPassword;
       } catch (error) {
         throw new Error("An error occurred during authentication");
       }
@@ -53,21 +47,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   session: {
     strategy: "jwt",
-    maxAge: 60 * 60 * 24 * 7,
+    maxAge: 60 * 60 * 24 * 7, // 7 days
   },
-
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+        // Add user data to the token
         token.id = user.id;
+        token.role = user.role;
+        token.permissions = user?.permissions;
       }
       return token;
     },
     async session({ session, token }) {
       if (token) {
+        // Add token data to the session
         session.user.id = token.id;
+        session.user.role = token.role;
+        session.user.permissions = token.permissions;
       }
-
       return session;
     },
   },

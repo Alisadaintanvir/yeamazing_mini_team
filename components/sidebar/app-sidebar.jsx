@@ -5,6 +5,7 @@ import {
   BookOpen,
   Bot,
   Command,
+  File,
   Frame,
   LifeBuoy,
   Map,
@@ -12,6 +13,7 @@ import {
   Send,
   Settings2,
   SquareTerminal,
+  User,
 } from "lucide-react";
 
 import {
@@ -44,6 +46,11 @@ const data = {
       isActive: true,
     },
     {
+      title: "Projects",
+      url: "/projects",
+      icon: File,
+    },
+    {
       title: "Messages",
       url: "/messages",
       icon: Bot,
@@ -52,6 +59,11 @@ const data = {
       title: "Team",
       url: "/team",
       icon: BookOpen,
+    },
+    {
+      title: "User Management",
+      url: "/user",
+      icon: User,
     },
     {
       title: "Settings",

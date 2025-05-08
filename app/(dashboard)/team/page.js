@@ -153,12 +153,12 @@ const TeamDashboard = () => {
         />
 
         {/* Add Team Member Modal */}
-        <AddTeamMemberModal
+        {/* <AddTeamMemberModal
           open={isAddingMember}
           onOpenChange={setIsAddingMember}
           onCreateTeam={handleCreateTeam}
           currentTeam={currentTeam.id}
-        />
+        /> */}
       </div>
     </SessionProvider>
   );
