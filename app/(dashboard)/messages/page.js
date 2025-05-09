@@ -13,6 +13,7 @@ import ChatHeader from "@/components/messages/ChatHeader";
 import MessageList from "@/components/messages/MessageList";
 import MessageInput from "@/components/messages/MessageInput";
 import { User } from "lucide-react";
+import { pusherClient } from "@/lib/pusher";
 
 export default function MessagePage() {
   const { data: session } = useSession();
@@ -102,6 +103,42 @@ export default function MessagePage() {
     }
   }, [searchParams, users]);
 
+  // Add Pusher subscription effect
+  useEffect(() => {
+    if (!selectedUser?.id || !session?.user?.id) return;
+
+    const channelName = `private-chat-${[session.user.id, selectedUser.id]
+      .sort()
+      .join("-")}`;
+
+    try {
+      const channel = pusherClient.subscribe(channelName);
+
+      channel.bind("pusher:subscription_succeeded", () => {
+        console.log("Successfully subscribed to channel:", channelName);
+      });
+
+      channel.bind("pusher:subscription_error", (error) => {
+        console.error("Error subscribing to channel:", error);
+      });
+
+      channel.bind("new-message", (data) => {
+        console.log("Received new message:", data);
+        if (data.senderId !== session.user.id) {
+          setConversations((prev) => [...prev, data]);
+          setTimeout(scrollToBottom, 100);
+        }
+      });
+
+      return () => {
+        console.log("Unsubscribing from channel:", channelName);
+        pusherClient.unsubscribe(channelName);
+      };
+    } catch (error) {
+      console.error("Error setting up Pusher subscription:", error);
+    }
+  }, [selectedUser?.id, session?.user?.id]);
+
   const handleFileUpload = async (e) => {
     const newFiles = Array.from(e.target.files);
 
@@ -170,24 +207,21 @@ export default function MessagePage() {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
+  // Update sendMessage function to include more debugging
   const sendMessage = async () => {
     if ((!message && files.length === 0) || !selectedUser) return;
 
     try {
-      // Only set uploading state if there are files to upload
       if (files.length > 0) {
         setIsUploading(true);
       }
 
-      // First, ensure all files are uploaded to Cloudinary
       const uploadedFiles = await Promise.all(
         files.map(async (file) => {
-          // If the file already has a Cloudinary URL, use it
           if (file.url && !file.url.startsWith("blob:")) {
             return file;
           }
 
-          // Otherwise, upload the file
           const formData = new FormData();
           formData.append("file", file.file);
 
@@ -211,7 +245,7 @@ export default function MessagePage() {
         })
       );
 
-      // Now send the message with the Cloudinary URLs
+      console.log("Sending message to:", selectedUser.id);
       const response = await fetch("/api/messages", {
         method: "POST",
         headers: {
@@ -227,19 +261,20 @@ export default function MessagePage() {
       const data = await response.json();
 
       if (data.success) {
+        console.log("Message sent successfully:", data.message);
         setConversations((prev) => [...prev, data.message]);
         setMessage("");
         setFiles([]);
         toast.success("Message sent successfully");
         setTimeout(scrollToBottom, 100);
       } else {
+        console.error("Failed to send message:", data.message);
         toast.error(data.message || "Failed to send message");
       }
     } catch (error) {
       console.error("Error sending message:", error);
       toast.error("Failed to send message");
     } finally {
-      // Only clear uploading state if it was set
       if (files.length > 0) {
         setIsUploading(false);
       }
