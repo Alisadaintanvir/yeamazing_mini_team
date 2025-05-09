@@ -1,36 +1,162 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Yeamazing Mini Team - Real-time Chat Application
 
-## Getting Started
+A modern real-time chat application built with Next.js, featuring instant messaging, file sharing, and real-time updates using Pusher.
 
-First, run the development server:
+## Features
+
+- 💬 Real-time messaging with Pusher integration
+- 👥 User-to-user private messaging
+- 📎 File attachments support
+- 🔍 User search functionality
+- 🎨 Modern UI with Tailwind CSS
+- 🔒 Secure authentication with NextAuth.js
+- 📱 Responsive design for all devices
+
+## Tech Stack
+
+- **Frontend:**
+
+  - Next.js 14 (App Router)
+  - React
+  - Tailwind CSS
+  - Shadcn UI Components
+
+- **Backend:**
+
+  - Next.js API Routes
+  - Prisma (Database ORM)
+  - PostgreSQL (Database)
+  - Pusher (Real-time functionality)
+  - Cloudinary (For File Upload)
+
+- **Authentication:**
+  - NextAuth.js
+  - JWT
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- Node.js (v18 or higher)
+- npm or yarn
+- PostgreSQL database
+- Pusher account
+- Cloudinary account
+
+## Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```env
+# Database
+DATABASE_URL="postgresql://api@accelerator_key/mini_team?sslmode=require"
+DIRECT_URL="postgresql://user:password@localhost:5432/your_database"
+
+# NextAuth
+AUTH_SECRET="your-nextauth-secret"
+
+# Pusher
+NEXT_PUBLIC_PUSHER_APP_KEY="your-pusher-app-key"
+PUSHER_APP_ID="your-pusher-app-id"
+PUSHER_APP_SECRET="your-pusher-app-secret"
+PUSHER_APP_CLUSTER="your-pusher-cluster"
+
+CLOUDINARY_CLOUD_NAME=name
+CLOUDINARY_API_KEY=key
+CLOUDINARY_API_SECRET=secret
+```
+
+## Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/yeamazing_mini_team.git
+cd yeamazing_mini_team
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Set up the database:
+
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+4. Run the development server:
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+yeamazing_mini_team/
+├── app/
+│   ├── (dashboard)/
+│   │   └── messages/      # Chat interface
+│   ├── api/              # API routes
+│   └── auth/             # Authentication pages
+├── components/
+│   ├── messages/         # Chat components
+│   └── ui/              # UI components
+├── lib/
+│   ├── pusher.js        # Pusher configuration
+│   └── prisma.js        # Prisma client
+├── prisma/
+│   └── schema.prisma    # Database schema
+└── public/              # Static assets
+```
 
-## Learn More
+## Features in Detail
 
-To learn more about Next.js, take a look at the following resources:
+### Real-time Messaging
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Instant message delivery using Pusher
+- Optimistic updates for better UX
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### File Sharing
 
-## Deploy on Vercel
+- Support for multiple file types
+- Image previews
+- File upload progress indicators
+- Secure file storage
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### User Management
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- User search functionality
+- Online/offline status
+- User profiles
+- Private messaging
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- [Next.js](https://nextjs.org/)
+- [Pusher](https://pusher.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Shadcn UI](https://ui.shadcn.com/)
+- [NextAuth.js](https://next-auth.js.org/)
