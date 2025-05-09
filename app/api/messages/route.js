@@ -39,9 +39,12 @@ async function createMessage(req) {
       );
     }
 
-    const { recipientId, content } = await req.json();
+    const { recipientId, content, attachments } = await req.json();
 
-    if (!recipientId || !content) {
+    if (
+      !recipientId ||
+      (!content && (!attachments || attachments.length === 0))
+    ) {
       return NextResponse.json(
         { success: false, message: "Missing required fields" },
         { status: 400 }
@@ -50,9 +53,14 @@ async function createMessage(req) {
 
     const message = await prisma.message.create({
       data: {
-        content,
-        senderId: session.user.id,
-        recipientId,
+        content: content || "",
+        sender: {
+          connect: { id: session.user.id },
+        },
+        recipient: {
+          connect: { id: recipientId },
+        },
+        attachments: attachments || null,
       },
       include: {
         sender: {

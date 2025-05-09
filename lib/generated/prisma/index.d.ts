@@ -5934,25 +5934,26 @@ export namespace Prisma {
   export type MessageMinAggregateOutputType = {
     id: string | null
     content: string | null
-    createdAt: Date | null
     senderId: string | null
     recipientId: string | null
+    createdAt: Date | null
   }
 
   export type MessageMaxAggregateOutputType = {
     id: string | null
     content: string | null
-    createdAt: Date | null
     senderId: string | null
     recipientId: string | null
+    createdAt: Date | null
   }
 
   export type MessageCountAggregateOutputType = {
     id: number
     content: number
-    createdAt: number
+    attachments: number
     senderId: number
     recipientId: number
+    createdAt: number
     _all: number
   }
 
@@ -5960,25 +5961,26 @@ export namespace Prisma {
   export type MessageMinAggregateInputType = {
     id?: true
     content?: true
-    createdAt?: true
     senderId?: true
     recipientId?: true
+    createdAt?: true
   }
 
   export type MessageMaxAggregateInputType = {
     id?: true
     content?: true
-    createdAt?: true
     senderId?: true
     recipientId?: true
+    createdAt?: true
   }
 
   export type MessageCountAggregateInputType = {
     id?: true
     content?: true
-    createdAt?: true
+    attachments?: true
     senderId?: true
     recipientId?: true
+    createdAt?: true
     _all?: true
   }
 
@@ -6056,10 +6058,11 @@ export namespace Prisma {
 
   export type MessageGroupByOutputType = {
     id: string
-    content: string
-    createdAt: Date
+    content: string | null
+    attachments: JsonValue | null
     senderId: string
     recipientId: string
+    createdAt: Date
     _count: MessageCountAggregateOutputType | null
     _min: MessageMinAggregateOutputType | null
     _max: MessageMaxAggregateOutputType | null
@@ -6082,9 +6085,10 @@ export namespace Prisma {
   export type MessageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     content?: boolean
-    createdAt?: boolean
+    attachments?: boolean
     senderId?: boolean
     recipientId?: boolean
+    createdAt?: boolean
     sender?: boolean | UserDefaultArgs<ExtArgs>
     recipient?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["message"]>
@@ -6092,9 +6096,10 @@ export namespace Prisma {
   export type MessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     content?: boolean
-    createdAt?: boolean
+    attachments?: boolean
     senderId?: boolean
     recipientId?: boolean
+    createdAt?: boolean
     sender?: boolean | UserDefaultArgs<ExtArgs>
     recipient?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["message"]>
@@ -6102,9 +6107,10 @@ export namespace Prisma {
   export type MessageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     content?: boolean
-    createdAt?: boolean
+    attachments?: boolean
     senderId?: boolean
     recipientId?: boolean
+    createdAt?: boolean
     sender?: boolean | UserDefaultArgs<ExtArgs>
     recipient?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["message"]>
@@ -6112,12 +6118,13 @@ export namespace Prisma {
   export type MessageSelectScalar = {
     id?: boolean
     content?: boolean
-    createdAt?: boolean
+    attachments?: boolean
     senderId?: boolean
     recipientId?: boolean
+    createdAt?: boolean
   }
 
-  export type MessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "createdAt" | "senderId" | "recipientId", ExtArgs["result"]["message"]>
+  export type MessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "attachments" | "senderId" | "recipientId" | "createdAt", ExtArgs["result"]["message"]>
   export type MessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sender?: boolean | UserDefaultArgs<ExtArgs>
     recipient?: boolean | UserDefaultArgs<ExtArgs>
@@ -6139,10 +6146,11 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      content: string
-      createdAt: Date
+      content: string | null
+      attachments: Prisma.JsonValue | null
       senderId: string
       recipientId: string
+      createdAt: Date
     }, ExtArgs["result"]["message"]>
     composites: {}
   }
@@ -6570,9 +6578,10 @@ export namespace Prisma {
   interface MessageFieldRefs {
     readonly id: FieldRef<"Message", 'String'>
     readonly content: FieldRef<"Message", 'String'>
-    readonly createdAt: FieldRef<"Message", 'DateTime'>
+    readonly attachments: FieldRef<"Message", 'Json'>
     readonly senderId: FieldRef<"Message", 'String'>
     readonly recipientId: FieldRef<"Message", 'String'>
+    readonly createdAt: FieldRef<"Message", 'DateTime'>
   }
     
 
@@ -7057,9 +7066,10 @@ export namespace Prisma {
   export const MessageScalarFieldEnum: {
     id: 'id',
     content: 'content',
-    createdAt: 'createdAt',
+    attachments: 'attachments',
     senderId: 'senderId',
-    recipientId: 'recipientId'
+    recipientId: 'recipientId',
+    createdAt: 'createdAt'
   };
 
   export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
@@ -7071,6 +7081,14 @@ export namespace Prisma {
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
   export const QueryMode: {
@@ -7087,6 +7105,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -7161,6 +7188,20 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -7472,20 +7513,22 @@ export namespace Prisma {
     OR?: MessageWhereInput[]
     NOT?: MessageWhereInput | MessageWhereInput[]
     id?: StringFilter<"Message"> | string
-    content?: StringFilter<"Message"> | string
-    createdAt?: DateTimeFilter<"Message"> | Date | string
+    content?: StringNullableFilter<"Message"> | string | null
+    attachments?: JsonNullableFilter<"Message">
     senderId?: StringFilter<"Message"> | string
     recipientId?: StringFilter<"Message"> | string
+    createdAt?: DateTimeFilter<"Message"> | Date | string
     sender?: XOR<UserScalarRelationFilter, UserWhereInput>
     recipient?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type MessageOrderByWithRelationInput = {
     id?: SortOrder
-    content?: SortOrder
-    createdAt?: SortOrder
+    content?: SortOrderInput | SortOrder
+    attachments?: SortOrderInput | SortOrder
     senderId?: SortOrder
     recipientId?: SortOrder
+    createdAt?: SortOrder
     sender?: UserOrderByWithRelationInput
     recipient?: UserOrderByWithRelationInput
   }
@@ -7495,20 +7538,22 @@ export namespace Prisma {
     AND?: MessageWhereInput | MessageWhereInput[]
     OR?: MessageWhereInput[]
     NOT?: MessageWhereInput | MessageWhereInput[]
-    content?: StringFilter<"Message"> | string
-    createdAt?: DateTimeFilter<"Message"> | Date | string
+    content?: StringNullableFilter<"Message"> | string | null
+    attachments?: JsonNullableFilter<"Message">
     senderId?: StringFilter<"Message"> | string
     recipientId?: StringFilter<"Message"> | string
+    createdAt?: DateTimeFilter<"Message"> | Date | string
     sender?: XOR<UserScalarRelationFilter, UserWhereInput>
     recipient?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
   export type MessageOrderByWithAggregationInput = {
     id?: SortOrder
-    content?: SortOrder
-    createdAt?: SortOrder
+    content?: SortOrderInput | SortOrder
+    attachments?: SortOrderInput | SortOrder
     senderId?: SortOrder
     recipientId?: SortOrder
+    createdAt?: SortOrder
     _count?: MessageCountOrderByAggregateInput
     _max?: MessageMaxOrderByAggregateInput
     _min?: MessageMinOrderByAggregateInput
@@ -7519,10 +7564,11 @@ export namespace Prisma {
     OR?: MessageScalarWhereWithAggregatesInput[]
     NOT?: MessageScalarWhereWithAggregatesInput | MessageScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Message"> | string
-    content?: StringWithAggregatesFilter<"Message"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"Message"> | Date | string
+    content?: StringNullableWithAggregatesFilter<"Message"> | string | null
+    attachments?: JsonNullableWithAggregatesFilter<"Message">
     senderId?: StringWithAggregatesFilter<"Message"> | string
     recipientId?: StringWithAggregatesFilter<"Message"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Message"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -7834,7 +7880,8 @@ export namespace Prisma {
 
   export type MessageCreateInput = {
     id?: string
-    content: string
+    content?: string | null
+    attachments?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     sender: UserCreateNestedOneWithoutSentMessagesInput
     recipient: UserCreateNestedOneWithoutReceivedMessagesInput
@@ -7842,15 +7889,17 @@ export namespace Prisma {
 
   export type MessageUncheckedCreateInput = {
     id?: string
-    content: string
-    createdAt?: Date | string
+    content?: string | null
+    attachments?: NullableJsonNullValueInput | InputJsonValue
     senderId: string
     recipientId: string
+    createdAt?: Date | string
   }
 
   export type MessageUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    attachments?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sender?: UserUpdateOneRequiredWithoutSentMessagesNestedInput
     recipient?: UserUpdateOneRequiredWithoutReceivedMessagesNestedInput
@@ -7858,32 +7907,36 @@ export namespace Prisma {
 
   export type MessageUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    attachments?: NullableJsonNullValueInput | InputJsonValue
     senderId?: StringFieldUpdateOperationsInput | string
     recipientId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MessageCreateManyInput = {
     id?: string
-    content: string
-    createdAt?: Date | string
+    content?: string | null
+    attachments?: NullableJsonNullValueInput | InputJsonValue
     senderId: string
     recipientId: string
+    createdAt?: Date | string
   }
 
   export type MessageUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    attachments?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MessageUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    attachments?: NullableJsonNullValueInput | InputJsonValue
     senderId?: StringFieldUpdateOperationsInput | string
     recipientId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -8264,29 +8317,79 @@ export namespace Prisma {
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type MessageCountOrderByAggregateInput = {
     id?: SortOrder
     content?: SortOrder
-    createdAt?: SortOrder
+    attachments?: SortOrder
     senderId?: SortOrder
     recipientId?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type MessageMaxOrderByAggregateInput = {
     id?: SortOrder
     content?: SortOrder
-    createdAt?: SortOrder
     senderId?: SortOrder
     recipientId?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type MessageMinOrderByAggregateInput = {
     id?: SortOrder
     content?: SortOrder
-    createdAt?: SortOrder
     senderId?: SortOrder
     recipientId?: SortOrder
+    createdAt?: SortOrder
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type UserCreatepermissionsInput = {
@@ -8862,6 +8965,29 @@ export namespace Prisma {
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type TeamMembershipCreateWithoutUserInput = {
     id?: string
@@ -8919,16 +9045,18 @@ export namespace Prisma {
 
   export type MessageCreateWithoutSenderInput = {
     id?: string
-    content: string
+    content?: string | null
+    attachments?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     recipient: UserCreateNestedOneWithoutReceivedMessagesInput
   }
 
   export type MessageUncheckedCreateWithoutSenderInput = {
     id?: string
-    content: string
-    createdAt?: Date | string
+    content?: string | null
+    attachments?: NullableJsonNullValueInput | InputJsonValue
     recipientId: string
+    createdAt?: Date | string
   }
 
   export type MessageCreateOrConnectWithoutSenderInput = {
@@ -8943,16 +9071,18 @@ export namespace Prisma {
 
   export type MessageCreateWithoutRecipientInput = {
     id?: string
-    content: string
+    content?: string | null
+    attachments?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     sender: UserCreateNestedOneWithoutSentMessagesInput
   }
 
   export type MessageUncheckedCreateWithoutRecipientInput = {
     id?: string
-    content: string
-    createdAt?: Date | string
+    content?: string | null
+    attachments?: NullableJsonNullValueInput | InputJsonValue
     senderId: string
+    createdAt?: Date | string
   }
 
   export type MessageCreateOrConnectWithoutRecipientInput = {
@@ -9041,10 +9171,11 @@ export namespace Prisma {
     OR?: MessageScalarWhereInput[]
     NOT?: MessageScalarWhereInput | MessageScalarWhereInput[]
     id?: StringFilter<"Message"> | string
-    content?: StringFilter<"Message"> | string
-    createdAt?: DateTimeFilter<"Message"> | Date | string
+    content?: StringNullableFilter<"Message"> | string | null
+    attachments?: JsonNullableFilter<"Message">
     senderId?: StringFilter<"Message"> | string
     recipientId?: StringFilter<"Message"> | string
+    createdAt?: DateTimeFilter<"Message"> | Date | string
   }
 
   export type MessageUpsertWithWhereUniqueWithoutRecipientInput = {
@@ -9586,16 +9717,18 @@ export namespace Prisma {
 
   export type MessageCreateManySenderInput = {
     id?: string
-    content: string
-    createdAt?: Date | string
+    content?: string | null
+    attachments?: NullableJsonNullValueInput | InputJsonValue
     recipientId: string
+    createdAt?: Date | string
   }
 
   export type MessageCreateManyRecipientInput = {
     id?: string
-    content: string
-    createdAt?: Date | string
+    content?: string | null
+    attachments?: NullableJsonNullValueInput | InputJsonValue
     senderId: string
+    createdAt?: Date | string
   }
 
   export type TeamMembershipUpdateWithoutUserInput = {
@@ -9649,44 +9782,50 @@ export namespace Prisma {
 
   export type MessageUpdateWithoutSenderInput = {
     id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    attachments?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recipient?: UserUpdateOneRequiredWithoutReceivedMessagesNestedInput
   }
 
   export type MessageUncheckedUpdateWithoutSenderInput = {
     id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    attachments?: NullableJsonNullValueInput | InputJsonValue
     recipientId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MessageUncheckedUpdateManyWithoutSenderInput = {
     id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    attachments?: NullableJsonNullValueInput | InputJsonValue
     recipientId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MessageUpdateWithoutRecipientInput = {
     id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    attachments?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sender?: UserUpdateOneRequiredWithoutSentMessagesNestedInput
   }
 
   export type MessageUncheckedUpdateWithoutRecipientInput = {
     id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    attachments?: NullableJsonNullValueInput | InputJsonValue
     senderId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MessageUncheckedUpdateManyWithoutRecipientInput = {
     id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    attachments?: NullableJsonNullValueInput | InputJsonValue
     senderId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TeamMembershipCreateManyTeamInput = {

@@ -1,30 +1,51 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Send, Paperclip, User, Search, Plus, X } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
+
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 
+import { useRouter, useSearchParams } from "next/navigation";
+import UserList from "@/components/messages/UserList";
+import ChatHeader from "@/components/messages/ChatHeader";
+import MessageList from "@/components/messages/MessageList";
+import MessageInput from "@/components/messages/MessageInput";
+import { User } from "lucide-react";
+
 export default function MessagePage() {
   const { data: session } = useSession();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [selectedUser, setSelectedUser] = useState(null);
   const [message, setMessage] = useState("");
   const [conversations, setConversations] = useState([]);
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [files, setFiles] = useState([]);
   const fileInputRef = useRef(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const messagesEndRef = useRef(null);
+  const isInitialLoad = useRef(true);
+
+  // Helper function for file icons
+  const getFileIcon = (fileType) => {
+    if (fileType.startsWith("image/")) return "image";
+    if (fileType.startsWith("video/")) return "video";
+    if (fileType.startsWith("audio/")) return "audio";
+    if (fileType.includes("pdf")) return "pdf";
+    if (fileType.includes("word")) return "document";
+    if (fileType.includes("excel") || fileType.includes("sheet"))
+      return "spreadsheet";
+    return "file";
+  };
 
   // Fetch users
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        setLoading(true);
         const response = await fetch("/api/users");
         const data = await response.json();
 
@@ -40,36 +61,110 @@ export default function MessagePage() {
         console.error("Error fetching users:", error);
         toast.error("Failed to fetch users");
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     if (session?.user?.id) {
       fetchUsers();
     }
-  }, [session]);
+  }, [session?.user?.id]);
 
   // Load initial conversations
   useEffect(() => {
-    const fetchConversations = async () => {
+    const fetchConversations = async (userId) => {
       try {
-        const response = await fetch("/api/messages");
+        const response = await fetch(`/api/messages?userId=${userId}`);
         const data = await response.json();
+
         if (data.success) {
           setConversations(data.messages || []);
+          setTimeout(scrollToBottom, 100);
         }
       } catch (error) {
         console.error("Error fetching conversations:", error);
+        toast.error("Failed to fetch messages");
       }
     };
 
-    fetchConversations();
-  }, []);
+    fetchConversations(selectedUser?.id);
+  }, [selectedUser?.id]);
 
-  const handleFileUpload = (e) => {
+  // Update the useEffect for handling URL parameters
+  useEffect(() => {
+    const userId = searchParams.get("userId");
+    if (userId) {
+      const user = users.find((u) => u.id === userId);
+      if (user) {
+        setSelectedUser(user);
+        fetchConversations(user.id);
+      }
+    }
+  }, [searchParams, users]);
+
+  const handleFileUpload = async (e) => {
     const newFiles = Array.from(e.target.files);
-    setFiles((prev) => [...prev, ...newFiles]);
+
+    // First, create preview URLs for all files
+    const previewFiles = newFiles.map((file) => ({
+      name: file.name,
+      type: file.type,
+      size: file.size,
+      url: file.type.startsWith("image/") ? URL.createObjectURL(file) : null,
+      file: file, // Keep the actual file object for later upload
+    }));
+
+    // Add previews to the files state immediately
+    setFiles((prev) => [...prev, ...previewFiles]);
+
+    // Then upload each file
+    try {
+      for (const file of newFiles) {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Update the file URL after successful upload
+          setFiles((prev) =>
+            prev.map((f) =>
+              f.name === file.name ? { ...f, url: data.url } : f
+            )
+          );
+          toast.success("File uploaded successfully");
+        } else {
+          // Remove the file if upload fails
+          setFiles((prev) => prev.filter((f) => f.name !== file.name));
+          toast.error(data.message || "Failed to upload file");
+        }
+      }
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      // Remove all files that failed to upload
+      setFiles((prev) =>
+        prev.filter((f) => !newFiles.some((nf) => nf.name === f.name))
+      );
+      toast.error("Failed to upload file");
+    }
   };
+
+  // Add cleanup for object URLs when component unmounts
+  useEffect(() => {
+    return () => {
+      // Cleanup object URLs when component unmounts
+      files.forEach((file) => {
+        if (file.url && file.url.startsWith("blob:")) {
+          URL.revokeObjectURL(file.url);
+        }
+      });
+    };
+  }, [files]);
 
   const removeFile = (index) => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
@@ -79,17 +174,54 @@ export default function MessagePage() {
     if ((!message && files.length === 0) || !selectedUser) return;
 
     try {
-      const formData = new FormData();
-      formData.append("recipientId", selectedUser.id);
-      formData.append("content", message);
+      // Only set uploading state if there are files to upload
+      if (files.length > 0) {
+        setIsUploading(true);
+      }
 
-      files.forEach((file) => {
-        formData.append("files", file);
-      });
+      // First, ensure all files are uploaded to Cloudinary
+      const uploadedFiles = await Promise.all(
+        files.map(async (file) => {
+          // If the file already has a Cloudinary URL, use it
+          if (file.url && !file.url.startsWith("blob:")) {
+            return file;
+          }
 
+          // Otherwise, upload the file
+          const formData = new FormData();
+          formData.append("file", file.file);
+
+          const response = await fetch("/api/upload", {
+            method: "POST",
+            body: formData,
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            return {
+              name: file.name,
+              type: file.type,
+              size: file.size,
+              url: data.url,
+            };
+          } else {
+            throw new Error(data.message || "Failed to upload file");
+          }
+        })
+      );
+
+      // Now send the message with the Cloudinary URLs
       const response = await fetch("/api/messages", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          recipientId: selectedUser.id,
+          content: message,
+          attachments: uploadedFiles,
+        }),
       });
 
       const data = await response.json();
@@ -98,12 +230,19 @@ export default function MessagePage() {
         setConversations((prev) => [...prev, data.message]);
         setMessage("");
         setFiles([]);
+        toast.success("Message sent successfully");
+        setTimeout(scrollToBottom, 100);
       } else {
         toast.error(data.message || "Failed to send message");
       }
     } catch (error) {
       console.error("Error sending message:", error);
       toast.error("Failed to send message");
+    } finally {
+      // Only clear uploading state if it was set
+      if (files.length > 0) {
+        setIsUploading(false);
+      }
     }
   };
 
@@ -114,212 +253,132 @@ export default function MessagePage() {
       user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Update the handleUserSelect function
+  const handleUserSelect = (user) => {
+    isInitialLoad.current = true; // Reset initial load flag when selecting new user
+    setSelectedUser(user);
+    fetchConversations(user.id);
+    router.push(`/messages?userId=${user.id}`);
+  };
+
+  // Update the fetchConversations function
+  const fetchConversations = async (userId) => {
+    try {
+      const response = await fetch(`/api/messages?userId=${userId}`);
+      const data = await response.json();
+
+      if (data.success) {
+        setConversations(data.messages);
+        // Use immediate scroll for initial load
+        if (isInitialLoad.current) {
+          messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+          isInitialLoad.current = false;
+        } else {
+          // Use smooth scroll for new messages
+          setTimeout(scrollToBottom, 100);
+        }
+      } else {
+        toast.error(data.message || "Failed to fetch messages");
+      }
+    } catch (error) {
+      console.error("Error fetching conversations:", error);
+      toast.error("Failed to fetch messages");
+    }
+  };
+
+  // Update the scrollToBottom function
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: isInitialLoad.current ? "auto" : "smooth",
+    });
+  };
+
+  // Update the useEffect for scrolling
+  useEffect(() => {
+    if (conversations.length > 0) {
+      scrollToBottom();
+    }
+  }, [conversations]);
+
   return (
     <div className="flex h-[calc(100vh-160px)] border rounded-lg">
-      {/* User list sidebar */}
-      <div className="w-64 border-r">
-        <div className="p-4 border-b">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Messages</h2>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setSelectedUser(null)}
-              className="hover:bg-gray-100"
-            >
-              <Plus className="h-5 w-5" />
-            </Button>
-          </div>
-          <div className="relative mt-2">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search users..."
-              className="pl-9"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+      {isLoading ? (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-2">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+            <p className="text-sm text-muted-foreground">Loading messages...</p>
           </div>
         </div>
-        <ScrollArea className="h-[calc(100%-80px)]">
-          {loading ? (
-            <div className="p-4 text-center text-muted-foreground">
-              Loading users...
-            </div>
-          ) : filteredUsers.length === 0 ? (
-            <div className="p-4 text-center text-muted-foreground">
-              No users found
-            </div>
-          ) : (
-            filteredUsers.map((user) => (
-              <div
-                key={user.id}
-                className={`flex items-center p-4 border-b cursor-pointer hover:bg-gray-50 ${
-                  selectedUser?.id === user.id ? "bg-gray-100" : ""
-                }`}
-                onClick={() => setSelectedUser(user)}
-              >
-                <div className="relative">
-                  <Avatar className="h-10 w-10">
-                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                </div>
-                <div className="ml-3">
-                  <p className="font-medium">{user.name}</p>
-                  <p className="text-sm text-muted-foreground">{user.role}</p>
-                </div>
-              </div>
-            ))
-          )}
-        </ScrollArea>
-      </div>
+      ) : (
+        <>
+          <UserList
+            users={users}
+            loading={false}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            selectedUser={selectedUser}
+            onUserSelect={handleUserSelect}
+            onClearSelection={() => setSelectedUser(null)}
+          />
 
-      {/* Chat area */}
-      <div className="flex-1 flex flex-col">
-        {selectedUser ? (
-          <>
-            {/* Chat header */}
-            <div className="p-4 border-b flex items-center">
-              <Avatar className="h-10 w-10">
-                <AvatarFallback>{selectedUser.name.charAt(0)}</AvatarFallback>
-              </Avatar>
-              <div className="ml-3">
-                <p className="font-medium">{selectedUser.name}</p>
-                <p className="text-sm text-muted-foreground">
-                  {selectedUser.role}
-                </p>
-              </div>
-            </div>
-
-            {/* Messages */}
-            <ScrollArea className="flex-1 p-4">
-              {conversations && conversations.length > 0 ? (
-                conversations
-                  .filter(
-                    (msg) =>
-                      (msg.senderId === session?.user?.id &&
-                        msg.recipientId === selectedUser.id) ||
-                      (msg.recipientId === session?.user?.id &&
-                        msg.senderId === selectedUser.id)
-                  )
-                  .map((msg) => (
-                    <div
-                      key={msg.id}
-                      className={`flex mb-4 ${
-                        msg.senderId === session?.user?.id
-                          ? "justify-end"
-                          : "justify-start"
-                      }`}
-                    >
-                      <div
-                        className={`max-w-xs md:max-w-md rounded-lg p-3 ${
-                          msg.senderId === session?.user?.id
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted"
-                        }`}
-                      >
-                        <p>{msg.content}</p>
-                        <p className="text-xs mt-1 opacity-70">
-                          {new Date(msg.createdAt).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </p>
-                      </div>
-                    </div>
-                  ))
-              ) : (
-                <div className="flex items-center justify-center h-full">
-                  <div className="text-center space-y-2">
-                    <p className="text-muted-foreground">No messages yet</p>
-                    <p className="text-sm text-muted-foreground">
-                      Start the conversation by sending a message
-                    </p>
-                  </div>
-                </div>
-              )}
-            </ScrollArea>
-
-            {/* Message input */}
-            <div className="p-4 border-t">
-              {files.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-2">
-                  {files.map((file, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-1 bg-muted px-2 py-1 rounded-md text-sm"
-                    >
-                      <span className="truncate max-w-[150px]">
-                        {file.name}
-                      </span>
-                      <button
-                        onClick={() => removeFile(index)}
-                        className="text-muted-foreground hover:text-foreground"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-              <div className="flex gap-2">
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileUpload}
-                  className="hidden"
-                  multiple
-                />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <Paperclip className="h-5 w-5" />
-                </Button>
-                <Input
-                  placeholder="Type a message..."
-                  className="flex-1"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      sendMessage();
-                    }
+          <div className="flex-1 flex flex-col relative h-full">
+            {selectedUser ? (
+              <>
+                <ChatHeader user={selectedUser} />
+                <div
+                  className="flex-1 overflow-y-auto px-4"
+                  style={{
+                    height: "calc(100% - 140px)",
+                    paddingBottom: "100px",
                   }}
+                >
+                  <MessageList
+                    messages={conversations}
+                    currentUserId={session?.user?.id}
+                    selectedUser={selectedUser}
+                    messagesEndRef={messagesEndRef}
+                  />
+                </div>
+                <MessageInput
+                  message={message}
+                  setMessage={setMessage}
+                  files={files}
+                  setFiles={setFiles}
+                  isUploading={isUploading}
+                  onSend={sendMessage}
+                  fileInputRef={fileInputRef}
+                  onFileUpload={handleFileUpload}
+                  onRemoveFile={removeFile}
                 />
-                <Button onClick={sendMessage}>
-                  <Send className="h-5 w-5" />
-                </Button>
+              </>
+            ) : (
+              <div className="flex-1 flex items-center justify-center">
+                <div className="text-center space-y-4">
+                  <User className="h-10 w-10 mx-auto text-muted-foreground" />
+                  <h3 className="text-lg font-medium">
+                    Select a user to start chatting
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Choose from the list on the left or click the + button to
+                    start a new conversation
+                  </p>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      const firstUser = filteredUsers[0];
+                      if (firstUser) {
+                        setSelectedUser(firstUser);
+                      }
+                    }}
+                  >
+                    Start New Conversation
+                  </Button>
+                </div>
               </div>
-            </div>
-          </>
-        ) : (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center space-y-4">
-              <User className="h-10 w-10 mx-auto text-muted-foreground" />
-              <h3 className="text-lg font-medium">
-                Select a user to start chatting
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Choose from the list on the left or click the + button to start
-                a new conversation
-              </p>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  const firstUser = filteredUsers[0];
-                  if (firstUser) {
-                    setSelectedUser(firstUser);
-                  }
-                }}
-              >
-                Start New Conversation
-              </Button>
-            </div>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 }

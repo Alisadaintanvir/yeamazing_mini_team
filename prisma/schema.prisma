@@ -87,10 +87,11 @@ model Project {
 
 model Message {
   id          String   @id @default(cuid())
-  content     String
-  createdAt   DateTime @default(now())
+  content     String?
+  attachments Json?
   senderId    String
   recipientId String
+  createdAt   DateTime @default(now())
   sender      User     @relation("SentMessages", fields: [senderId], references: [id])
   recipient   User     @relation("ReceivedMessages", fields: [recipientId], references: [id])
 }
