@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import {
   Table,
   TableBody,
@@ -23,60 +24,48 @@ import {
   ChevronDown,
   User,
   Mail,
-  Shield,
   Loader2,
   Check,
+  Trash2,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "react-toastify";
+import DashboardLoading from "../loading";
 
-const roles = ["Admin", "Editor", "Viewer", "Guest"];
-const statuses = ["active", "pending", "suspended"];
+const roles = ["ADMIN", "MANAGER", "MEMBER"]; // Updated to match your schema
+
 export default function UserManagementPage() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
   const [loadingStates, setLoadingStates] = useState({
-    roles: {}, // { "user-1": true, "user-2": false }
-    statuses: {}, // { "user-1": true, "user-2": false }
+    roles: {},
   });
-  const [users, setUsers] = useState([
-    {
-      id: "user-1",
-      name: "Alex Johnson",
-      email: "alex@example.com",
-      role: "Admin",
-      status: "active",
-      avatar: "/avatars/01.png",
-      lastActive: "2023-05-15T10:30:00Z",
-    },
-    {
-      id: "user-2",
-      name: "Sarah Williams",
-      email: "sarah@example.com",
-      role: "Editor",
-      status: "active",
-      avatar: "/avatars/02.png",
-      lastActive: "2023-05-14T15:45:00Z",
-    },
-    {
-      id: "user-3",
-      name: "Michael Chen",
-      email: "michael@example.com",
-      role: "Viewer",
-      status: "pending",
-      avatar: "/avatars/03.png",
-      lastActive: "2023-05-10T09:15:00Z",
-    },
-    {
-      id: "user-4",
-      name: "Emily Davis",
-      email: "emily@example.com",
-      role: "Guest",
-      status: "suspended",
-      avatar: "/avatars/04.png",
-      lastActive: "2023-04-28T14:20:00Z",
-    },
-  ]);
+  const [users, setUsers] = useState([]);
+  const { data: session } = useSession();
+
+  const isAdmin = session?.user?.role === "ADMIN";
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch("/api/users");
+      const data = await response.json();
+      if (data.success) {
+        setUsers(data.users);
+      } else {
+        toast.error(data.message || "Failed to fetch users");
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      toast.error("Failed to fetch users");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredUsers = users.filter(
     (user) =>
@@ -86,30 +75,47 @@ export default function UserManagementPage() {
   );
 
   const handleRoleChange = async (userId, newRole) => {
+    if (!isAdmin) {
+      toast.error("Only administrators can change user roles");
+      return;
+    }
+
+    if (userId === session?.user?.id) {
+      toast.error("You cannot change your own role");
+      return;
+    }
+
     setLoadingStates((prev) => ({
       ...prev,
       roles: { ...prev.roles, [userId]: true },
     }));
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      setUsers(
-        users.map((user) =>
-          user.id === userId ? { ...user, role: newRole } : user
-        )
-      );
-
-      toast({
-        title: "Role updated",
-        description: `User's role has been changed to ${newRole}`,
+      const response = await fetch("/api/users", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: userId,
+          role: newRole,
+        }),
       });
+
+      const data = await response.json();
+      if (data.success) {
+        setUsers(
+          users.map((user) =>
+            user.id === userId ? { ...user, role: newRole } : user
+          )
+        );
+        toast.success(`User's role has been changed to ${newRole}`);
+      } else {
+        throw new Error(data.message);
+      }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update role",
-        variant: "destructive",
-      });
+      console.error("Error updating role:", error);
+      toast.error(error.message || "Failed to update role");
     } finally {
       setLoadingStates((prev) => ({
         ...prev,
@@ -118,46 +124,46 @@ export default function UserManagementPage() {
     }
   };
 
-  // Similar modification for handleStatusChange
-  const handleStatusChange = async (userId, newStatus) => {
-    setLoadingStates((prev) => ({
-      ...prev,
-      statuses: { ...prev.statuses, [userId]: true },
-    }));
+  const handleDeleteUser = async (userId) => {
+    if (!isAdmin) {
+      toast.error("Only administrators can delete users");
+      return;
+    }
+
+    if (userId === session?.user?.id) {
+      toast.error("You cannot delete your own account");
+      return;
+    }
+
+    if (
+      !confirm(
+        "Are you sure you want to delete this user? This action cannot be undone."
+      )
+    ) {
+      return;
+    }
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      setUsers(
-        users.map((user) =>
-          user.id === userId ? { ...user, status: newStatus } : user
-        )
-      );
-
-      toast({
-        title: "Status updated",
-        description: `User's status has been changed to ${newStatus}`,
+      const response = await fetch(`/api/users/${userId}`, {
+        method: "DELETE",
       });
-    } finally {
-      setLoadingStates((prev) => ({
-        ...prev,
-        statuses: { ...prev.statuses, [userId]: false },
-      }));
+
+      const data = await response.json();
+      if (data.success) {
+        setUsers(users.filter((user) => user.id !== userId));
+        toast.success("User deleted successfully");
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      toast.error(error.message || "Failed to delete user");
     }
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "active":
-        return "bg-green-500";
-      case "pending":
-        return "bg-yellow-500";
-      case "suspended":
-        return "bg-red-500";
-      default:
-        return "bg-gray-500";
-    }
-  };
+  if (loading) {
+    return <DashboardLoading />;
+  }
 
   return (
     <div className="space-y-4">
@@ -173,10 +179,12 @@ export default function UserManagementPage() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Button>
-            <User className="h-4 w-4 mr-2" />
-            Add User
-          </Button>
+          {isAdmin && (
+            <Button>
+              <User className="h-4 w-4 mr-2" />
+              Add User
+            </Button>
+          )}
         </div>
       </div>
 
@@ -186,124 +194,126 @@ export default function UserManagementPage() {
             <TableRow>
               <TableHead>User</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Status</TableHead>
               <TableHead>Role</TableHead>
-              <TableHead>Last Active</TableHead>
+              <TableHead>Join Date</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredUsers.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell>
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.avatar} />
-                      <AvatarFallback>
-                        {user.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span>{user.name}</span>
+            {filteredUsers.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} className="text-center py-8">
+                  <div className="flex flex-col items-center justify-center">
+                    <div className="rounded-full bg-gray-100 p-3 mb-4">
+                      <User className="h-6 w-6 text-gray-400" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">
+                      No users found
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      {searchTerm
+                        ? "No users match your search criteria"
+                        : "There are no users in the system yet"}
+                    </p>
                   </div>
                 </TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>
-                  <Badge variant="outline" className="capitalize">
-                    <span
-                      className={`h-2 w-2 rounded-full ${getStatusColor(
-                        user.status
-                      )} mr-2`}
-                    />
-                    {user.status}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-28 justify-between"
-                        disabled={loadingStates.roles[user.id]}
-                      >
-                        {loadingStates.roles[user.id] ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <>
-                            {user.role}
-                            <ChevronDown className="h-4 w-4 opacity-50" />
-                          </>
-                        )}
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start">
-                      {roles.map((role) => (
-                        <DropdownMenuItem
-                          key={role}
-                          onClick={() => handleRoleChange(user.id, role)}
-                          disabled={user.role === role}
-                        >
-                          {role}
-                          {user.role === role && (
-                            <Check className="h-4 w-4 ml-auto" />
-                          )}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-                <TableCell>
-                  {new Date(user.lastActive).toLocaleDateString()}
-                </TableCell>
-                <TableCell className="text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem className="gap-2">
-                        <Mail className="h-4 w-4" />
-                        Send Email
-                      </DropdownMenuItem>
+              </TableRow>
+            ) : (
+              filteredUsers.map((user) => (
+                <TableRow key={user.id}>
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={user.avatar} />
+                        <AvatarFallback>
+                          {user.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span>{user.name}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>
+                    {isAdmin ? (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <DropdownMenuItem className="gap-2">
-                            <Shield className="h-4 w-4" />
-                            Change Status
-                          </DropdownMenuItem>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-28 justify-between"
+                            disabled={loadingStates.roles[user.id]}
+                          >
+                            {loadingStates.roles[user.id] ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <>
+                                {user.role}
+                                <ChevronDown className="h-4 w-4 opacity-50" />
+                              </>
+                            )}
+                          </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                          {statuses.map((status) => (
+                        <DropdownMenuContent align="start">
+                          {roles.map((role) => (
                             <DropdownMenuItem
-                              key={status}
-                              onClick={() =>
-                                handleStatusChange(user.id, status)
+                              key={role}
+                              onClick={() => handleRoleChange(user.id, role)}
+                              disabled={
+                                user.role === role ||
+                                user.id === session?.user?.id
                               }
-                              disabled={user.status === status}
                             >
-                              <span
-                                className={`h-2 w-2 rounded-full ${getStatusColor(
-                                  status
-                                )} mr-2`}
-                              />
-                              {status}
-                              {user.status === status && (
+                              {role}
+                              {user.role === role && (
                                 <Check className="h-4 w-4 ml-auto" />
                               )}
                             </DropdownMenuItem>
                           ))}
                         </DropdownMenuContent>
                       </DropdownMenu>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))}
+                    ) : (
+                      <Badge variant="outline">{user.role}</Badge>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {new Date(user.createdAt).toLocaleDateString(undefined, {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {isAdmin && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem className="gap-2">
+                            <Mail className="h-4 w-4" />
+                            Send Email
+                          </DropdownMenuItem>
+                          {user.id !== session?.user?.id && (
+                            <DropdownMenuItem
+                              className="gap-2 text-red-600 focus:text-red-600 focus:bg-red-50"
+                              onClick={() => handleDeleteUser(user.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              Delete User
+                            </DropdownMenuItem>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>
