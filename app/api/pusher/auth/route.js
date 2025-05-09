@@ -1,18 +1,10 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { pusherServer } from "@/lib/pusher";
+import { withMiddleware } from "@/lib/withMiddleware";
 
-export async function POST(req) {
+async function pusherAuth(req) {
   try {
-    const session = await auth();
-    if (!session) {
-      console.error("No session found in Pusher auth");
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
     // Get raw body text
     const rawBody = await req.text();
 
@@ -28,12 +20,6 @@ export async function POST(req) {
         { status: 400 }
       );
     }
-
-    console.log("Authorizing channel:", {
-      socketId,
-      channel,
-      userId: session.user.id,
-    });
 
     // Authorize the channel
     const authResponse = pusherServer.authorizeChannel(socketId, channel);
@@ -51,3 +37,7 @@ export async function POST(req) {
     );
   }
 }
+
+export const POST = withMiddleware(pusherAuth, {
+  requireAuth: true,
+});
