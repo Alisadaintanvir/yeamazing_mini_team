@@ -71,6 +71,7 @@ export default function ProjectPage() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const { data: session } = useSession();
+  const [teams, setTeams] = useState([]);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -90,6 +91,23 @@ export default function ProjectPage() {
     };
 
     fetchProjects();
+  }, []);
+
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        const response = await fetch("/api/teams");
+        const data = await response.json();
+        if (data.success) {
+          setTeams(data.teams);
+        }
+      } catch (error) {
+        console.error("Error fetching teams:", error);
+        toast.error("Failed to load teams");
+      }
+    };
+
+    fetchTeams();
   }, []);
 
   const filteredProjects = projects.filter((project) =>
@@ -185,6 +203,36 @@ export default function ProjectPage() {
     }
   };
 
+  const assignTeam = async (projectId, teamId) => {
+    try {
+      const response = await fetch("/api/project", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: projectId,
+          teamId: teamId,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setProjects(
+          projects.map((project) =>
+            project.id === projectId ? data.project : project
+          )
+        );
+        toast.success("Team assigned successfully");
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error) {
+      console.error("Error assigning team:", error);
+      toast.error(error.message || "Failed to assign team");
+    }
+  };
+
   const getStatus = (statusValue) =>
     statuses.find((s) => s.value === statusValue) || statuses[0];
 
@@ -201,7 +249,7 @@ export default function ProjectPage() {
   };
 
   const canModifyProject = (userRole) => {
-    return userRole === "ADMIN" || userRole === "MANAGER";
+    return userRole === "ADMIN";
   };
 
   const renderStatusCell = (project) => {
@@ -277,6 +325,73 @@ export default function ProjectPage() {
               >
                 <span className={`h-3 w-3 rounded-full ${p.color}`} />
                 {p.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </TableCell>
+    );
+  };
+
+  const renderTeamCell = (project) => {
+    const isAdmin = canModifyProject(session?.user?.role);
+
+    if (!isAdmin) {
+      return (
+        <TableCell className="text-right">
+          <div className="flex justify-end">
+            {project.team ? (
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs border border-white">
+                  {project.team.name.charAt(0)}
+                </div>
+                <span className="text-sm">{project.team.name}</span>
+              </div>
+            ) : (
+              <span className="text-sm text-muted-foreground">No team</span>
+            )}
+          </div>
+        </TableCell>
+      );
+    }
+
+    return (
+      <TableCell className="text-right">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="gap-2">
+              {project.team ? (
+                <>
+                  <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs">
+                    {project.team.name.charAt(0)}
+                  </div>
+                  {project.team.name}
+                </>
+              ) : (
+                "Assign Team"
+              )}
+              <ChevronDown className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              onClick={() => assignTeam(project.id, null)}
+              className={!project.team ? "text-muted-foreground" : ""}
+            >
+              No Team
+            </DropdownMenuItem>
+            {teams.map((team) => (
+              <DropdownMenuItem
+                key={team.id}
+                onClick={() => assignTeam(project.id, team.id)}
+                className={project.team?.id === team.id ? "bg-accent" : ""}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs">
+                    {team.name.charAt(0)}
+                  </div>
+                  {team.name}
+                </div>
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
@@ -367,64 +482,71 @@ export default function ProjectPage() {
           <CardTitle>Active Projects</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Project</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Priority</TableHead>
-                <TableHead>Progress</TableHead>
-                <TableHead>Due Date</TableHead>
-                <TableHead className="text-right">Team</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredProjects.map((project) => (
-                <TableRow key={project.id} className="hover:bg-gray-50">
-                  <TableCell className="font-medium">
-                    <div className="flex items-center gap-2">
-                      {project.name}
-                    </div>
-                  </TableCell>
-                  {renderStatusCell(project)}
-                  {renderPriorityCell(project)}
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Progress value={project.progress} className="h-2" />
-                      <span className="text-sm text-muted-foreground">
-                        {project.progress}%
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {new Date(project.dueDate).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end">
-                      {project.team ? (
-                        project.team.map((member, i) => (
-                          <div
-                            key={i}
-                            className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs -ml-1 border border-white"
-                          >
-                            {member.charAt(0)}
-                          </div>
-                        ))
-                      ) : (
-                        <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs -ml-1 border border-white">
-                          -
-                        </div>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {renderDeleteButton(project)}
-                  </TableCell>
+          {filteredProjects.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <div className="rounded-full bg-gray-100 p-3 mb-4">
+                <Plus className="h-6 w-6 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">No projects yet</h3>
+              <p className="text-sm text-gray-500 mb-4">
+                {searchTerm
+                  ? "No projects match your search criteria"
+                  : session?.user?.role === "ADMIN"
+                  ? "Get started by creating your first project"
+                  : "There are no projects available at the moment"}
+              </p>
+              {session?.user?.role === "ADMIN" && !searchTerm && (
+                <CreateProjectDialog onProjectCreated={handleProjectCreated}>
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create Project
+                  </Button>
+                </CreateProjectDialog>
+              )}
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Project</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Priority</TableHead>
+                  <TableHead>Progress</TableHead>
+                  <TableHead>Due Date</TableHead>
+                  <TableHead className="text-right">Team</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {filteredProjects.map((project) => (
+                  <TableRow key={project.id} className="hover:bg-gray-50">
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        {project.name}
+                      </div>
+                    </TableCell>
+                    {renderStatusCell(project)}
+                    {renderPriorityCell(project)}
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Progress value={project.progress} className="h-2" />
+                        <span className="text-sm text-muted-foreground">
+                          {project.progress}%
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {new Date(project.dueDate).toLocaleDateString()}
+                    </TableCell>
+                    {renderTeamCell(project)}
+                    <TableCell className="text-right">
+                      {renderDeleteButton(project)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
     </div>

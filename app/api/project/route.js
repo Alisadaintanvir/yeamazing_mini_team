@@ -28,13 +28,6 @@ async function createProject(req) {
         priority,
         dueDate: dueDate ? new Date(dueDate) : null,
       },
-      include: {
-        team: {
-          include: {
-            members: true,
-          },
-        },
-      },
     });
 
     return NextResponse.json(
@@ -65,6 +58,23 @@ async function getProjects(req) {
     const projects = await prisma.project.findMany({
       orderBy: {
         createdAt: "desc",
+      },
+      include: {
+        team: {
+          include: {
+            members: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
@@ -108,6 +118,23 @@ async function patchProject(req) {
 
     const existingProject = await prisma.project.findUnique({
       where: { id },
+      include: {
+        team: {
+          include: {
+            members: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!existingProject) {
@@ -128,7 +155,17 @@ async function patchProject(req) {
       include: {
         team: {
           include: {
-            members: true,
+            members: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                  },
+                },
+              },
+            },
           },
         },
       },

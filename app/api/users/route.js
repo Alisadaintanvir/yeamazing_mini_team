@@ -14,23 +14,6 @@ async function getUsers(req) {
         createdAt: true,
         updatedAt: true,
         permissions: true,
-        teams: {
-          select: {
-            team: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
-            role: true,
-          },
-        },
-        ownedTeams: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
       },
       orderBy: {
         name: "asc",
@@ -89,23 +72,6 @@ async function updateUserRole(req) {
         email: true,
         role: true,
         permissions: true,
-        teams: {
-          select: {
-            team: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
-            role: true,
-          },
-        },
-        ownedTeams: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
       },
     });
 

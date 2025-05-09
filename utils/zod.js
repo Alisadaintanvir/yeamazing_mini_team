@@ -33,15 +33,6 @@ export const teamSchema = z.object({
     .nullable(),
 });
 
-// Schema for adding members to a team
-export const addTeamMemberSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  team: z.string().nonempty("Team is required"),
-  role: z.enum(["ADMIN", "MEMBER"], {
-    errorMap: () => ({ message: "Role must be either ADMIN or MEMBER" }),
-  }),
-});
-
 // Schema for updating team details
 export const updateTeamSchema = z.object({
   name: z
@@ -60,13 +51,6 @@ export const updateTeamSchema = z.object({
     .nullable(),
 });
 
-// Schema for team member role update
-export const updateTeamMemberRoleSchema = z.object({
-  role: z.enum(["ADMIN", "MEMBER"], {
-    errorMap: () => ({ message: "Role must be either ADMIN or MEMBER" }),
-  }),
-});
-
 export const projectSchema = z.object({
   name: z.string().min(1, "Project name is required"),
   description: z.string().optional(),
@@ -76,4 +60,12 @@ export const projectSchema = z.object({
   priority: z.enum(["low", "medium", "high"]).default("medium"),
   dueDate: z.string().optional(),
   teamId: z.string().optional(),
+});
+
+export const addTeamMemberSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  team: z.string().nonempty("Team is required"),
+  role: z.enum(["ADMIN", "MEMBER"], {
+    errorMap: () => ({ message: "Role must be either ADMIN or MEMBER" }),
+  }),
 });
