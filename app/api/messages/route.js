@@ -3,6 +3,12 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { pusherServer } from "@/lib/pusher";
 
+// Add runtime configuration
+export const runtime = "edge"; // or 'nodejs' if you prefer
+
+// Add dynamic configuration
+export const dynamic = "force-dynamic";
+
 export async function POST(req) {
   try {
     const session = await auth();
