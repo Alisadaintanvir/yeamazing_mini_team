@@ -49,11 +49,12 @@ Create a `.env` file in the root directory with the following variables:
 
 ```env
 # Database
-DATABASE_URL="postgresql://api@accelerator_key/mini_team?sslmode=require"
-DIRECT_URL="postgresql://user:password@localhost:5432/your_database"
+DATABASE_URL="your-database-url"
+DIRECT_URL="your-direct-database-url"
 
 # NextAuth
 AUTH_SECRET="your-nextauth-secret"
+NEXTAUTH_URL="your-app-url"
 
 # Pusher
 NEXT_PUBLIC_PUSHER_APP_KEY="your-pusher-app-key"
@@ -61,9 +62,10 @@ PUSHER_APP_ID="your-pusher-app-id"
 PUSHER_APP_SECRET="your-pusher-app-secret"
 PUSHER_APP_CLUSTER="your-pusher-cluster"
 
-CLOUDINARY_CLOUD_NAME=name
-CLOUDINARY_API_KEY=key
-CLOUDINARY_API_SECRET=secret
+# Cloudinary
+CLOUDINARY_CLOUD_NAME="your-cloud-name"
+CLOUDINARY_API_KEY="your-api-key"
+CLOUDINARY_API_SECRET="your-api-secret"
 ```
 
 ## Installation
@@ -160,3 +162,44 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Shadcn UI](https://ui.shadcn.com/)
 - [NextAuth.js](https://next-auth.js.org/)
+
+## Deployment
+
+### Deploying to Vercel
+
+1. Push your code to a GitHub repository
+
+2. Go to [Vercel](https://vercel.com) and create a new project
+
+3. Import your GitHub repository
+
+4. Configure the following environment variables in Vercel:
+
+   - `DATABASE_URL`
+   - `DIRECT_URL`
+   - `AUTH_SECRET`
+   - `NEXTAUTH_URL` (set to your Vercel deployment URL)
+   - `NEXT_PUBLIC_PUSHER_APP_KEY`
+   - `PUSHER_APP_ID`
+   - `PUSHER_APP_SECRET`
+   - `PUSHER_APP_CLUSTER`
+   - `CLOUDINARY_CLOUD_NAME`
+   - `CLOUDINARY_API_KEY`
+   - `CLOUDINARY_API_SECRET`
+
+5. Deploy your project
+
+### Troubleshooting Vercel Deployment
+
+If you encounter build errors:
+
+1. Check that all environment variables are properly set in Vercel
+2. Ensure your database is accessible from Vercel's servers
+3. Verify that your Pusher and Cloudinary credentials are correct
+4. Check the build logs for specific error messages
+
+Common issues:
+
+- Database connection errors: Make sure your database URL is correct and the database is accessible
+- Authentication errors: Verify your AUTH_SECRET and NEXTAUTH_URL are set correctly
+- API route errors: Ensure all API routes are properly exported and handle errors correctly
