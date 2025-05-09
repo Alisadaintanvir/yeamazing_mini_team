@@ -64,6 +64,7 @@ const data = {
       title: "User Management",
       url: "/user",
       icon: User,
+      adminOnly: true,
     },
     {
       title: "Settings",

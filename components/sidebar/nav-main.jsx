@@ -2,6 +2,7 @@
 
 import { ChevronRight } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -22,6 +23,8 @@ import Link from "next/link";
 
 export function NavMain({ items }) {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const userRole = session?.user?.role;
 
   const isActive = (url) => {
     return pathname === url;
@@ -31,11 +34,25 @@ export function NavMain({ items }) {
     return subItems?.some((subItem) => pathname === subItem.url);
   };
 
+  // Filter menu items based on user role
+  const filteredItems = items.filter((item) => {
+    // Admin can see everything
+    if (userRole === "ADMIN") return true;
+
+    // Manager can see everything except User Management
+    if (userRole === "MANAGER") {
+      return item.title !== "User Management";
+    }
+
+    // Regular members can only see Dashboard, Projects, Messages, and Team
+    return ["Dashboard", "Projects", "Messages", "Team"].includes(item.title);
+  });
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
-        {items.map((item) => (
+        {filteredItems.map((item) => (
           <Collapsible key={item.title}>
             <SidebarMenuItem>
               <SidebarMenuButton
