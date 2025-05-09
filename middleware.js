@@ -1,14 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "./auth";
-
-// Define routes and their required roles
-const routePermissions = {
-  "/dashboard": ["ADMIN", "MANAGER", "MEMBER"],
-  "/messages": ["ADMIN", "MANAGER", "MEMBER"],
-  "/projects": ["ADMIN", "MANAGER", "MEMBER"],
-  "/team": ["ADMIN", "MANAGER", "MEMBER"],
-  "/user": ["ADMIN"], // Only admin can access user management
-};
+import { ROUTE_PERMISSIONS } from "./lib/constants";
 
 const authRoutes = ["/login", "/registration"];
 
@@ -26,7 +18,7 @@ export default async function middleware(req) {
   }
 
   // Check if the route requires authentication
-  const isProtectedRoute = Object.keys(routePermissions).some((route) =>
+  const isProtectedRoute = Object.keys(ROUTE_PERMISSIONS).some((route) =>
     pathname.startsWith(route)
   );
 
@@ -40,7 +32,7 @@ export default async function middleware(req) {
 
     // Check role-based access
     const userRole = session.user.role;
-    const allowedRoles = Object.entries(routePermissions).find(([route]) =>
+    const allowedRoles = Object.entries(ROUTE_PERMISSIONS).find(([route]) =>
       pathname.startsWith(route)
     )?.[1];
 
