@@ -53,71 +53,112 @@ export function RegistrationForm({ className, ...props }) {
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Sign Up</CardTitle>
-          <CardDescription>
-            Enter your information below to create an account
+      <Card className="border-none shadow-xl bg-white/80 backdrop-blur-sm">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-center">
+            Create Account
+          </CardTitle>
+          <CardDescription className="text-center">
+            Fill in your details to get started
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-2">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  type="text"
-                  {...register("name")}
-                  placeholder="John Doe"
-                  required
-                />
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-sm font-medium">
+                  Full Name
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="name"
+                    type="text"
+                    {...register("name")}
+                    placeholder="John Doe"
+                    required
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
                 <FormError error={errors.name} />
               </div>
 
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  {...register("email")}
-                  placeholder="m@example.com"
-                  required
-                />
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-medium">
+                  Email
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="email"
+                    type="email"
+                    {...register("email")}
+                    placeholder="m@example.com"
+                    required
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
                 <FormError error={errors.email} />
               </div>
 
-              <div className="grid gap-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  {...register("password")}
-                  required
-                />
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-sm font-medium">
+                  Password
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type="password"
+                    {...register("password")}
+                    placeholder="Create a strong password"
+                    required
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
                 <FormError error={errors.password} />
               </div>
 
-              <div className="grid gap-2">
-                <Label htmlFor="confirm-password">Confirm Password</Label>
-                <Input
-                  id="confirm-password"
-                  type="password"
-                  {...register("confirmPassword")}
-                  required
-                />
+              <div className="space-y-2">
+                <Label
+                  htmlFor="confirm-password"
+                  className="text-sm font-medium"
+                >
+                  Confirm Password
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="confirm-password"
+                    type="password"
+                    {...register("confirmPassword")}
+                    placeholder="Confirm your password"
+                    required
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
                 <FormError error={errors.confirmPassword} />
               </div>
-
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Signing Up..." : "Sign Up"}
-              </Button>
             </div>
 
-            <div className="mt-4 text-center text-sm">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-2 rounded-lg transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg"
+            >
+              {isSubmitting ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Creating account...</span>
+                </div>
+              ) : (
+                "Create Account"
+              )}
+            </Button>
+
+            <div className="text-center text-sm text-gray-600">
               Already have an account?{" "}
-              <Link href="/login" className="underline underline-offset-4">
-                Sign In
+              <Link
+                href="/login"
+                className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
+              >
+                Sign in
               </Link>
             </div>
           </form>
