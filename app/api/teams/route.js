@@ -6,7 +6,6 @@ import { auth } from "@/auth";
 import { teamSchema } from "@/utils/zod";
 
 async function getTeams(req) {
-  const session = await auth();
   try {
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page")) || 1;

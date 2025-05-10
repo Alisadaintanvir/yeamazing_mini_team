@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import DashboardLoading from "../loading";
 
 export default function TeamManagementPage() {
@@ -37,6 +37,8 @@ export default function TeamManagementPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
   useEffect(() => {
     fetchTeams();
@@ -84,6 +86,7 @@ export default function TeamManagementPage() {
   const createTeam = async () => {
     if (!newTeamName.trim()) return;
 
+    setIsCreating(true);
     try {
       const response = await fetch("/api/teams", {
         method: "POST",
@@ -99,23 +102,15 @@ export default function TeamManagementPage() {
       if (data.success) {
         setTeams([...teams, data.team]);
         setNewTeamName("");
-        toast({
-          title: "Success",
-          description: "Team created successfully",
-        });
+        setIsCreateDialogOpen(false);
+        toast.success("Team created successfully");
       } else {
-        toast({
-          title: "Error",
-          description: data.message,
-          variant: "destructive",
-        });
+        toast.error(data.message || "Failed to create team");
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to create team",
-        variant: "destructive",
-      });
+      toast.error("Failed to create team");
+    } finally {
+      setIsCreating(false);
     }
   };
 
@@ -268,7 +263,10 @@ export default function TeamManagementPage() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Dialog>
+          <Dialog
+            open={isCreateDialogOpen}
+            onOpenChange={setIsCreateDialogOpen}
+          >
             <DialogTrigger asChild>
               <Button>
                 <Plus className="h-4 w-4 mr-2" />
@@ -284,9 +282,14 @@ export default function TeamManagementPage() {
                   placeholder="Team name"
                   value={newTeamName}
                   onChange={(e) => setNewTeamName(e.target.value)}
+                  disabled={isCreating}
                 />
-                <Button onClick={createTeam} className="w-full">
-                  Create Team
+                <Button
+                  onClick={createTeam}
+                  className="w-full"
+                  disabled={isCreating || !newTeamName.trim()}
+                >
+                  {isCreating ? "Creating..." : "Create Team"}
                 </Button>
               </div>
             </DialogContent>
