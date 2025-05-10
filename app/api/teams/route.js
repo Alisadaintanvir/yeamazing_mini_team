@@ -227,9 +227,6 @@ async function deleteTeam(req) {
 
     const existingTeam = await prisma.team.findUnique({
       where: { id },
-      include: {
-        owner: true,
-      },
     });
 
     if (!existingTeam) {
@@ -239,13 +236,12 @@ async function deleteTeam(req) {
       );
     }
 
-    if (existingTeam.ownerId !== session.user.id) {
-      return NextResponse.json(
-        { success: false, message: "Only team owner can delete team" },
-        { status: 403 }
-      );
-    }
+    // Delete all team memberships first
+    await prisma.teamMembership.deleteMany({
+      where: { teamId: id },
+    });
 
+    // Now delete the team
     await prisma.team.delete({
       where: { id },
     });

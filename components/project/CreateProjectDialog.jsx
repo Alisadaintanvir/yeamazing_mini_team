@@ -58,12 +58,28 @@ export function CreateProjectDialog({ onProjectCreated }) {
   const onSubmit = async (data) => {
     try {
       setLoading(true);
+
+      // Ensure all required fields are present
+      if (!data.name) {
+        throw new Error("Project name is required");
+      }
+
+      const projectData = {
+        name: data.name,
+        description: data.description || "",
+        status: data.status || "todo",
+        priority: data.priority || "medium",
+        dueDate: data.dueDate || null,
+        progress: 0, // Add default progress
+        team: [], // Add default empty team array
+      };
+
       const response = await fetch("/api/project", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(projectData),
       });
 
       const result = await response.json();
@@ -72,12 +88,20 @@ export function CreateProjectDialog({ onProjectCreated }) {
         throw new Error(result.message || "Failed to create project");
       }
 
+      // Ensure the project has all required properties before passing to parent
+      const newProject = {
+        ...result.project,
+        progress: result.project.progress || 0,
+        team: result.project.team || [],
+      };
+
       toast.success("Project created successfully");
       setOpen(false);
       form.reset();
-      onProjectCreated(result.project);
+      onProjectCreated(newProject);
     } catch (error) {
-      toast.error(error.message);
+      console.error("Project creation error:", error);
+      toast.error(error.message || "Failed to create project");
     } finally {
       setLoading(false);
     }

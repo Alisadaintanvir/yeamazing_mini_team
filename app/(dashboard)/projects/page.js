@@ -240,12 +240,25 @@ export default function ProjectPage() {
     priorities.find((p) => p.value === priorityValue) || priorities[0];
 
   const handleProjectCreated = (newProject) => {
+    if (!newProject) {
+      console.error("Received undefined project in handleProjectCreated");
+      return;
+    }
+
+    // Ensure all required properties are present
     const projectWithDefaults = {
       ...newProject,
+      name: newProject.name || "",
+      description: newProject.description || "",
+      status: newProject.status || "todo",
+      priority: newProject.priority || "medium",
       progress: newProject.progress || 0,
       team: newProject.team || [],
+      dueDate: newProject.dueDate || null,
     };
-    setProjects([...projects, projectWithDefaults]);
+
+    console.log("Adding new project:", projectWithDefaults);
+    setProjects((prevProjects) => [...prevProjects, projectWithDefaults]);
   };
 
   const canModifyProject = (userRole) => {
@@ -340,7 +353,7 @@ export default function ProjectPage() {
       return (
         <TableCell className="text-right">
           <div className="flex justify-end">
-            {project.team ? (
+            {project.team && project.team.name ? (
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs border border-white">
                   {project.team.name.charAt(0)}
@@ -360,7 +373,7 @@ export default function ProjectPage() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="gap-2">
-              {project.team ? (
+              {project.team && project.team.name ? (
                 <>
                   <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs">
                     {project.team.name.charAt(0)}

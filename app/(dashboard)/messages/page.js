@@ -114,16 +114,13 @@ export default function MessagePage() {
     try {
       const channel = pusherClient.subscribe(channelName);
 
-      channel.bind("pusher:subscription_succeeded", () => {
-        console.log("Successfully subscribed to channel:", channelName);
-      });
+      channel.bind("pusher:subscription_succeeded", () => {});
 
       channel.bind("pusher:subscription_error", (error) => {
         console.error("Error subscribing to channel:", error);
       });
 
       channel.bind("new-message", (data) => {
-        console.log("Received new message:", data);
         if (data.senderId !== session.user.id) {
           setConversations((prev) => [...prev, data]);
           setTimeout(scrollToBottom, 100);
@@ -131,7 +128,6 @@ export default function MessagePage() {
       });
 
       return () => {
-        console.log("Unsubscribing from channel:", channelName);
         pusherClient.unsubscribe(channelName);
       };
     } catch (error) {
@@ -245,7 +241,6 @@ export default function MessagePage() {
         })
       );
 
-      console.log("Sending message to:", selectedUser.id);
       const response = await fetch("/api/messages", {
         method: "POST",
         headers: {
@@ -261,14 +256,13 @@ export default function MessagePage() {
       const data = await response.json();
 
       if (data.success) {
-        console.log("Message sent successfully:", data.message);
         setConversations((prev) => [...prev, data.message]);
         setMessage("");
         setFiles([]);
         toast.success("Message sent successfully");
         setTimeout(scrollToBottom, 100);
       } else {
-        console.error("Failed to send message:", data.message);
+        console.error("Failed to send message:");
         toast.error(data.message || "Failed to send message");
       }
     } catch (error) {

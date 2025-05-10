@@ -123,23 +123,12 @@ export default function TeamManagementPage() {
       const data = await response.json();
       if (data.success) {
         setTeams(teams.filter((team) => team.id !== teamId));
-        toast({
-          title: "Success",
-          description: "Team deleted successfully",
-        });
+        toast.success("Team deleted successfully");
       } else {
-        toast({
-          title: "Error",
-          description: data.message,
-          variant: "destructive",
-        });
+        toast.error(data.message || "Failed to delete team");
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete team",
-        variant: "destructive",
-      });
+      toast.error("Failed to delete team");
     }
   };
 
@@ -168,23 +157,12 @@ export default function TeamManagementPage() {
               : team
           )
         );
-        toast({
-          title: "Success",
-          description: "Member added successfully",
-        });
+        toast.success("Member added successfully");
       } else {
-        toast({
-          title: "Error",
-          description: data.message,
-          variant: "destructive",
-        });
+        toast.error(data.message || "Failed to add member");
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to add member",
-        variant: "destructive",
-      });
+      toast.error("Failed to add member");
     }
   };
 
@@ -215,23 +193,12 @@ export default function TeamManagementPage() {
               : team
           )
         );
-        toast({
-          title: "Success",
-          description: "Member removed successfully",
-        });
+        toast.success("Member removed successfully");
       } else {
-        toast({
-          title: "Error",
-          description: data.message,
-          variant: "destructive",
-        });
+        toast.error(data.message || "Failed to remove member");
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to remove member",
-        variant: "destructive",
-      });
+      toast.error("Failed to remove member");
     }
   };
 
