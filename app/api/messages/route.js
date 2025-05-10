@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { pusherServer } from "@/lib/pusher";
-
-// Add runtime configuration
-export const runtime = "edge"; // or 'nodejs' if you prefer
+import { pusherServer } from "@/lib/pusher-server";
 
 // Add dynamic configuration
 export const dynamic = "force-dynamic";
