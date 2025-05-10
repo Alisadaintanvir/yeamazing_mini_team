@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { withMiddleware } from "@/lib/withMiddleware";
 import { prisma } from "@/lib/prisma";
 import { PERMISSIONS } from "@/lib/permissions";
-import { auth } from "@/auth";
 
 async function addMember(req) {
   try {

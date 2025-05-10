@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { auth } from "@/auth";
-import { signOut } from "@/auth";
 
 export function AuthHeader() {
   return (
