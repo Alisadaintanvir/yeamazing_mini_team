@@ -1,10 +1,10 @@
-import { defaultUserService } from "@/actions/defaultService";
 import { hashPassword } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { withRateLimit } from "@/lib/withRateLimit";
 import { registrationSchema } from "@/utils/zod";
 import { NextResponse } from "next/server";
 
-export async function POST(req) {
+async function signupHandler(req) {
   const body = await req.json();
   const result = registrationSchema.safeParse(body);
 
@@ -43,9 +43,6 @@ export async function POST(req) {
       },
     });
 
-    // Create default user service
-    await defaultUserService(user.id);
-
     return NextResponse.json(
       {
         success: true,
@@ -64,3 +61,5 @@ export async function POST(req) {
     );
   }
 }
+
+export const POST = withRateLimit(signupHandler, "auth");
