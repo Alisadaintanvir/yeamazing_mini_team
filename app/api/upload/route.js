@@ -7,7 +7,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export async function POST(req) {
+async function uploadHandler(req) {
   try {
     const formData = await req.formData();
     const file = formData.get("file");
@@ -54,3 +54,5 @@ export async function POST(req) {
     );
   }
 }
+
+export const POST = withRateLimit(uploadHandler, "api");
